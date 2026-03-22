@@ -61,6 +61,13 @@ app.use(session({
 app.use(express.static(path.join(__dirname, 'public')));
 
 // =============================================
+// PAGE ROUTES
+// =============================================
+app.get('/dashboard', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'dashboard.html'));
+});
+
+// =============================================
 // REGISTER — Step 1: validate + captcha + send email code
 // =============================================
 app.post('/api/register/send-code', async (req, res) => {
