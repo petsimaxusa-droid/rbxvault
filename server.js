@@ -150,29 +150,55 @@ app.get('/auth/discord/callback', async (req, res) => {
       })
     });
     const tokenData = await tokenRes.json();
-    if (!tokenData.access_token) return res.redirect(FRONTEND_URL + '?error=token_failed');
+    if (!tokenData.access_token) {
+      console.error('Discord token exchange failed:', JSON.stringify(tokenData));
+      return res.redirect(FRONTEND_URL + '?error=token_failed');
+    }
 
     const userRes = await fetch('https://discord.com/api/users/@me', {
       headers: { Authorization: `Bearer ${tokenData.access_token}` }
     });
     const discordUser = await userRes.json();
 
-    // Find or create user
-    let user = (await pool.query('SELECT id, username, discord_avatar FROM users WHERE discord_id=$1', [discordUser.id])).rows[0];
-
     const freshAvatarUrl = discordUser.avatar
       ? `https://cdn.discordapp.com/avatars/${discordUser.id}/${discordUser.avatar}.png?size=64`
       : '';
 
+    const discordEmail = (discordUser.email || '').toLowerCase() || null;
+
+    // 1) Returning user — find by discord_id
+    let user = (await pool.query(
+      'SELECT id, username, discord_avatar FROM users WHERE discord_id=$1',
+      [discordUser.id]
+    )).rows[0];
+
+    if (!user && discordEmail) {
+      // 2) Email match — user registered manually before, link discord to their account
+      const byEmail = (await pool.query(
+        'SELECT id, username, discord_avatar FROM users WHERE email=$1',
+        [discordEmail]
+      )).rows[0];
+      if (byEmail) {
+        await pool.query(
+          'UPDATE users SET discord_id=$1, discord_avatar=$2 WHERE id=$3',
+          [discordUser.id, freshAvatarUrl, byEmail.id]
+        );
+        user = { ...byEmail, discord_avatar: freshAvatarUrl };
+      }
+    }
+
     if (!user) {
-      let username = discordUser.username.slice(0, 16).replace(/[^a-zA-Z0-9_]/g, '_');
-      // Make unique if taken
+      // 3) New user — create account from Discord profile
+      let username = (discordUser.global_name || discordUser.username)
+        .slice(0, 16).replace(/[^a-zA-Z0-9_]/g, '_') || 'user';
+
+      // Ensure username is unique
       const taken = (await pool.query('SELECT id FROM users WHERE username ILIKE $1', [username])).rows[0];
-      if (taken) username = username.slice(0, 13) + '_' + Math.floor(Math.random()*100);
+      if (taken) username = username.slice(0, 12) + '_' + Math.floor(Math.random() * 1000);
 
       const result = await pool.query(
         'INSERT INTO users (email, username, discord_id, discord_avatar) VALUES ($1, $2, $3, $4) RETURNING id, username, discord_avatar',
-        [(discordUser.email || '').toLowerCase() || null, username, discordUser.id, freshAvatarUrl]
+        [discordEmail, username, discordUser.id, freshAvatarUrl]
       );
       user = result.rows[0];
     } else {
@@ -192,7 +218,8 @@ app.get('/auth/discord/callback', async (req, res) => {
     );
   } catch (err) {
     console.error('Discord OAuth error:', err);
-    res.redirect(FRONTEND_URL + '?error=oauth_failed');
+    const msg = encodeURIComponent(err.message || 'oauth_failed');
+    res.redirect(FRONTEND_URL + '?error=oauth_failed&detail=' + msg);
   }
 });
 
