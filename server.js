@@ -138,6 +138,11 @@ app.get('/auth/discord/callback', async (req, res) => {
   if (!code) return res.redirect(FRONTEND_URL + '?error=no_code');
 
   try {
+    console.log('[Discord] callback hit, code present:', !!code);
+    console.log('[Discord] using client_id:', DISCORD_CLIENT_ID);
+    console.log('[Discord] secret set:', !!DISCORD_CLIENT_SECRET);
+    console.log('[Discord] redirect_uri:', REDIRECT_URI);
+
     const tokenRes = await fetch('https://discord.com/api/oauth2/token', {
       method: 'POST',
       headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
@@ -150,9 +155,11 @@ app.get('/auth/discord/callback', async (req, res) => {
       })
     });
     const tokenData = await tokenRes.json();
+    console.log('[Discord] token response:', JSON.stringify(tokenData));
     if (!tokenData.access_token) {
-      console.error('Discord token exchange failed:', JSON.stringify(tokenData));
-      return res.redirect(FRONTEND_URL + '?error=token_failed');
+      console.error('[Discord] token exchange failed:', JSON.stringify(tokenData));
+      const detail = encodeURIComponent(tokenData.error_description || tokenData.error || 'unknown');
+      return res.redirect(FRONTEND_URL + '?error=token_failed&detail=' + detail);
     }
 
     const userRes = await fetch('https://discord.com/api/users/@me', {
