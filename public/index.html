@@ -3,7 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>RbxVault - Buy and Sell Robux Instantly</title>
+<title>RBXVault - Buy &amp; Sell Robux Instantly</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20100%20100'%3E%3Crect%20width='100'%20height='100'%20rx='20'%20fill='%23090909'/%3E%3Cpath%20fill='%231DDD7E'%20d='M50%208%20L88%2030%20L88%2070%20L50%2092%20L12%2070%20L12%2030%20Z'/%3E%3Cpath%20fill='%23090909'%20d='M50%2018%20L80%2035%20L80%2065%20L50%2082%20L20%2065%20L20%2035%20Z'/%3E%3Cpath%20fill='%231DDD7E'%20d='M50%2026%20L74%2040%20L74%2060%20L50%2074%20L26%2060%20L26%2040%20Z'/%3E%3Cpath%20fill='%23090909'%20d='M50%2036%20L64%2044%20L64%2056%20L50%2064%20L36%2056%20L36%2044%20Z'/%3E%3Crect%20fill='%231DDD7E'%20x='43'%20y='43'%20width='14'%20height='14'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
@@ -654,11 +655,12 @@ async function doRegister(){
   if(!turnstileToken){ toast('Please complete the captcha.'); return; }
 
   const btn = document.getElementById('regSubmitBtn');
-  btn.textContent = 'Sending code...'; btn.disabled = true;
+  btn.textContent = 'Loading...'; btn.disabled = true;
   try {
     const res = await fetch('/api/register/send-code', {
       method: 'POST',
       headers: {'Content-Type':'application/json'},
+      credentials: 'include',
       body: JSON.stringify({ email, username, password, turnstileToken })
     });
     const data = await res.json();
@@ -685,6 +687,7 @@ async function doVerifyCode(){
     const res = await fetch('/api/register/verify', {
       method: 'POST',
       headers: {'Content-Type':'application/json'},
+      credentials: 'include',
       body: JSON.stringify({ code })
     });
     const data = await res.json();
@@ -701,7 +704,7 @@ async function doVerifyCode(){
 async function resendCode(e){
   e.preventDefault();
   try {
-    const res = await fetch('/api/register/resend-code', { method: 'POST' });
+    const res = await fetch('/api/register/resend-code', { method: 'POST', credentials: 'include' });
     const data = await res.json();
     if(data.ok) toast('New code sent!', 'success');
     else toast(data.error || 'Could not resend. Please start over.');
