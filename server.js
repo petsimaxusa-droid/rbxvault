@@ -38,12 +38,20 @@ async function initDB() {
       discord_avatar TEXT,
       balance NUMERIC DEFAULT 0,
       role TEXT DEFAULT 'buy',
+      display_name TEXT,
+      avatar_url TEXT,
+      anon_vendor BOOLEAN DEFAULT true,
+      anon_customer BOOLEAN DEFAULT true,
       created_at TIMESTAMPTZ DEFAULT NOW()
     )
   `);
   console.log('Database ready');
   // Add role column if it doesn't exist (for existing databases)
   await pool.query(`ALTER TABLE users ADD COLUMN IF NOT EXISTS role TEXT DEFAULT 'buy'`);
+  await pool.query(`ALTER TABLE users ADD COLUMN IF NOT EXISTS display_name TEXT`);
+  await pool.query(`ALTER TABLE users ADD COLUMN IF NOT EXISTS avatar_url TEXT`);
+  await pool.query(`ALTER TABLE users ADD COLUMN IF NOT EXISTS anon_vendor BOOLEAN DEFAULT true`);
+  await pool.query(`ALTER TABLE users ADD COLUMN IF NOT EXISTS anon_customer BOOLEAN DEFAULT true`);
 }
 initDB().catch(console.error);
 
@@ -369,12 +377,23 @@ app.get('/api/me', async (req, res) => {
   if (!req.session.userId) return res.json({ loggedIn: false });
   try {
     const result = await pool.query(
-      'SELECT username, discord_avatar, balance, role FROM users WHERE id=$1',
+      'SELECT username, discord_avatar, balance, role, display_name, avatar_url, anon_vendor, anon_customer, email FROM users WHERE id=$1',
       [req.session.userId]
     );
     const user = result.rows[0];
     if (!user) return res.json({ loggedIn: false });
-    res.json({ loggedIn: true, username: user.username, avatar: user.discord_avatar || null, balance: user.balance, role: user.role || 'buy' });
+    res.json({
+      loggedIn: true,
+      username: user.username,
+      avatar: user.avatar_url || user.discord_avatar || null,
+      balance: user.balance,
+      role: user.role || 'buy',
+      display_name: user.display_name || user.username,
+      avatar_url: user.avatar_url || user.discord_avatar || '',
+      anon_vendor: user.anon_vendor !== false,
+      anon_customer: user.anon_customer !== false,
+      email: user.email || ''
+    });
   } catch {
     res.json({ loggedIn: false });
   }
@@ -389,6 +408,58 @@ app.post('/api/set-role', async (req, res) => {
   if (!['buy', 'sell'].includes(role)) return res.json({ ok: false, error: 'Invalid role.' });
   try {
     await pool.query('UPDATE users SET role=$1 WHERE id=$2', [role, req.session.userId]);
+    res.json({ ok: true });
+  } catch (err) {
+    console.error(err);
+    res.json({ ok: false, error: 'Something went wrong.' });
+  }
+});
+
+// =============================================
+// UPDATE DISPLAY NAME
+// =============================================
+app.post('/api/settings/display-name', async (req, res) => {
+  if (!req.session.userId) return res.json({ ok: false, error: 'Not logged in.' });
+  const { display_name } = req.body;
+  if (!display_name || display_name.length < 3) return res.json({ ok: false, error: 'Name must be at least 3 characters.' });
+  if (display_name.length > 16) return res.json({ ok: false, error: 'Name cannot be longer than 16 characters.' });
+  if (!/^[a-zA-Z0-9_]+$/.test(display_name)) return res.json({ ok: false, error: 'Letters, numbers, and underscores only.' });
+  try {
+    const taken = await pool.query('SELECT id FROM users WHERE username ILIKE $1 AND id != $2', [display_name, req.session.userId]);
+    if (taken.rows.length > 0) return res.json({ ok: false, error: 'That name is already taken.' });
+    await pool.query('UPDATE users SET username=$1, display_name=$1 WHERE id=$2', [display_name, req.session.userId]);
+    req.session.username = display_name;
+    res.json({ ok: true, username: display_name });
+  } catch (err) {
+    console.error(err);
+    res.json({ ok: false, error: 'Something went wrong.' });
+  }
+});
+
+// =============================================
+// UPDATE AVATAR URL
+// =============================================
+app.post('/api/settings/avatar', async (req, res) => {
+  if (!req.session.userId) return res.json({ ok: false, error: 'Not logged in.' });
+  const { avatar_url } = req.body;
+  try {
+    await pool.query('UPDATE users SET avatar_url=$1 WHERE id=$2', [avatar_url || null, req.session.userId]);
+    res.json({ ok: true });
+  } catch (err) {
+    console.error(err);
+    res.json({ ok: false, error: 'Something went wrong.' });
+  }
+});
+
+// =============================================
+// UPDATE PRIVACY
+// =============================================
+app.post('/api/settings/privacy', async (req, res) => {
+  if (!req.session.userId) return res.json({ ok: false, error: 'Not logged in.' });
+  const { anon_vendor, anon_customer } = req.body;
+  try {
+    await pool.query('UPDATE users SET anon_vendor=$1, anon_customer=$2 WHERE id=$3',
+      [anon_vendor !== false, anon_customer !== false, req.session.userId]);
     res.json({ ok: true });
   } catch (err) {
     console.error(err);
