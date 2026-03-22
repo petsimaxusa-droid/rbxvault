@@ -67,6 +67,10 @@ app.get('/dashboard', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'dashboard.html'));
 });
 
+app.get('/vendor', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'vendor.html'));
+});
+
 // =============================================
 // REGISTER — Step 1: validate + captcha + send email code
 // =============================================
