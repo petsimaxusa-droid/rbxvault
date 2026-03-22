@@ -75,8 +75,12 @@ app.use(express.static(path.join(__dirname, 'public'), { maxAge: 0, etag: false 
 // PAGE ROUTES
 // =============================================
 app.get('/dashboard', (req, res) => {
-  res.set('Cache-Control', 'no-store');
-  res.sendFile(path.join(__dirname, 'public', 'dashboard.html'));
+  res.set('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
+  res.set('Pragma', 'no-cache');
+  res.set('Expires', '0');
+  res.sendFile(path.join(__dirname, 'public', 'dashboard.html'), {}, (err) => {
+    if(err) res.status(500).send('Error loading dashboard: ' + err.message);
+  });
 });
 
 
