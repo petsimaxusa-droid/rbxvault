@@ -12,7 +12,7 @@ const PORT = process.env.PORT || 3000;
 // CONFIG
 // =============================================
 const DISCORD_CLIENT_ID = '1485007931803045908';
-const DISCORD_CLIENT_SECRET = process.env.hri2hMiUPhUI_xjxFkr6qCdQKuMRyg8D;
+const DISCORD_CLIENT_SECRET = process.env.DISCORD_CLIENT_SECRET;
 const REDIRECT_URI = 'https://rbxvault.cc/auth/discord/callback';
 const FRONTEND_URL = 'https://rbxvault.cc';
 // =============================================
