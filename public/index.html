@@ -590,7 +590,11 @@ function discordOAuth(){
     history.replaceState({}, '', window.location.pathname);
   }
   if(params.get('error')){
-    toast('Discord login failed. Please try again.');
+    const errType = params.get('error');
+    const detail = params.get('detail') ? ' (' + params.get('detail') + ')' : '';
+    if(errType === 'token_failed') toast('Discord auth failed: token exchange error. Check your redirect URI in Discord Dev Portal.');
+    else if(errType === 'no_code') toast('Discord login cancelled.');
+    else toast('Discord login failed. Please try again.' + detail);
     history.replaceState({}, '', window.location.pathname);
   }
 })();
