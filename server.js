@@ -11,10 +11,10 @@ const PORT = process.env.PORT || 3000;
 // =============================================
 // CONFIG - fill these in
 // =============================================
-const DISCORD_CLIENT_ID = 'YOUR_CLIENT_ID';
-const DISCORD_CLIENT_SECRET = 'YOUR_CLIENT_SECRET';
-const REDIRECT_URI = 'https://YOUR_DOMAIN/auth/discord/callback';
-const FRONTEND_URL = 'https://YOUR_DOMAIN';
+const DISCORD_CLIENT_ID = '1485007931803045908';
+const DISCORD_CLIENT_SECRET = 'hri2hMiUPhUI_xjxFkr6qCdQKuMRyg8D';
+const REDIRECT_URI = 'https://rbxvault.cc/auth/discord/callback';
+const FRONTEND_URL = 'https://rbxvault.cc';
 // =============================================
 
 const USERS_FILE = path.join(__dirname, 'users.json');
