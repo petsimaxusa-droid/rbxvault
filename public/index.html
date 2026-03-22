@@ -565,6 +565,11 @@ function doLogout(){
 
 function openLogin(e){
   e.preventDefault();
+  const session = localStorage.getItem('rbxvault_session');
+  if(session){
+    window.location.href = '/dashboard';
+    return;
+  }
   document.getElementById('loginPage').classList.add('active');
   document.body.style.overflow='hidden';
 }
