@@ -37,10 +37,13 @@ async function initDB() {
       discord_id TEXT UNIQUE,
       discord_avatar TEXT,
       balance NUMERIC DEFAULT 0,
+      role TEXT DEFAULT 'buy',
       created_at TIMESTAMPTZ DEFAULT NOW()
     )
   `);
   console.log('Database ready');
+  // Add role column if it doesn't exist (for existing databases)
+  await pool.query(`ALTER TABLE users ADD COLUMN IF NOT EXISTS role TEXT DEFAULT 'buy'`);
 }
 initDB().catch(console.error);
 
@@ -108,7 +111,8 @@ app.post('/api/register/send-code', async (req, res) => {
 
   // Generate 6-digit code and store in session
   const code = Math.floor(100000 + Math.random() * 900000).toString();
-  req.session.pendingReg = { email: email.toLowerCase(), username, password, code, expires: Date.now() + 10 * 60 * 1000 };
+  const pendingRole = req.body.role || 'buy';
+  req.session.pendingReg = { email: email.toLowerCase(), username, password, code, role: pendingRole, expires: Date.now() + 10 * 60 * 1000 };
 
   // Send email via Resend
   try {
@@ -164,9 +168,10 @@ app.post('/api/register/verify', async (req, res) => {
     const emailCheck = await pool.query('SELECT id FROM users WHERE email=$1', [pending.email]);
     if (emailCheck.rows.length > 0) return res.json({ ok: false, error: 'This email has already been registered.' });
 
+    const regRole = req.session.pendingReg.role || 'buy';
     const result = await pool.query(
-      'INSERT INTO users (email, username, password) VALUES ($1, $2, $3) RETURNING id, username',
-      [pending.email, pending.username, pending.password]
+      'INSERT INTO users (email, username, password, role) VALUES ($1, $2, $3, $4) RETURNING id, username',
+      [pending.email, pending.username, pending.password, regRole]
     );
     const user = result.rows[0];
     delete req.session.pendingReg;
@@ -364,14 +369,30 @@ app.get('/api/me', async (req, res) => {
   if (!req.session.userId) return res.json({ loggedIn: false });
   try {
     const result = await pool.query(
-      'SELECT username, discord_avatar, balance FROM users WHERE id=$1',
+      'SELECT username, discord_avatar, balance, role FROM users WHERE id=$1',
       [req.session.userId]
     );
     const user = result.rows[0];
     if (!user) return res.json({ loggedIn: false });
-    res.json({ loggedIn: true, username: user.username, avatar: user.discord_avatar || null, balance: user.balance });
+    res.json({ loggedIn: true, username: user.username, avatar: user.discord_avatar || null, balance: user.balance, role: user.role || 'buy' });
   } catch {
     res.json({ loggedIn: false });
+  }
+});
+
+// =============================================
+// SET ROLE
+// =============================================
+app.post('/api/set-role', async (req, res) => {
+  if (!req.session.userId) return res.json({ ok: false, error: 'Not logged in.' });
+  const { role } = req.body;
+  if (!['buy', 'sell'].includes(role)) return res.json({ ok: false, error: 'Invalid role.' });
+  try {
+    await pool.query('UPDATE users SET role=$1 WHERE id=$2', [role, req.session.userId]);
+    res.json({ ok: true });
+  } catch (err) {
+    console.error(err);
+    res.json({ ok: false, error: 'Something went wrong.' });
   }
 });
 
