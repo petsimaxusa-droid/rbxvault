@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>RbxVault - Buy and Sell Robux Instantly</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
+<script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
 :root{
@@ -426,7 +427,8 @@ footer{background:var(--bg2);border-top:0.5px solid var(--border);padding:48px;d
     <svg viewBox="0 0 100 100" width="32" height="32" style="color:var(--green)"><use href="#rbx"/></svg>
     <span class="auth-logo-text">RbxVault</span>
   </a>
-  <div class="auth-box">
+  <!-- Step 1: Register form -->
+  <div class="auth-box" id="regStep1">
     <h2>Register</h2>
     <div class="auth-field">
       <label>Email</label>
@@ -440,13 +442,36 @@ footer{background:var(--bg2);border-top:0.5px solid var(--border);padding:48px;d
       <label>Password</label>
       <input id="regPassword" type="password" placeholder="Create a password (min 8 characters)">
     </div>
-    <button class="auth-submit" onclick="doRegister()">Register</button>
+    <!-- Cloudflare Turnstile -->
+    <div style="margin:16px 0">
+      <div class="cf-turnstile" data-sitekey="0x4AAAAAACukg0U5g3XVz-4w" data-theme="dark" data-callback="onTurnstileSuccess" data-expired-callback="onTurnstileExpired"></div>
+    </div>
+    <button class="auth-submit" id="regSubmitBtn" onclick="doRegister()" disabled style="opacity:0.5;cursor:not-allowed">Register</button>
     <div class="auth-divider">OR</div>
     <button class="auth-discord" onclick="discordOAuth()">
       <svg viewBox="0 0 24 24"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028c.462-.63.874-1.295 1.226-1.994a.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z"/></svg>
       Continue with Discord
     </button>
     <div class="auth-footer">Already have an account? <a href="#" onclick="showLoginFromRegister()">Login</a></div>
+  </div>
+  <!-- Step 2: Email verification -->
+  <div class="auth-box" id="regStep2" style="display:none">
+    <div style="text-align:center;margin-bottom:24px">
+      <div style="width:56px;height:56px;background:var(--green-dim);border:0.5px solid var(--border-green);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 16px">
+        <svg viewBox="0 0 24 24" style="width:24px;height:24px;fill:var(--green)"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>
+      </div>
+      <h2 style="margin-bottom:8px">Check your email</h2>
+      <p style="color:var(--muted);font-size:14px;line-height:1.6">We sent a 6-digit code to<br><span id="regEmailDisplay" style="color:#fff;font-weight:500"></span></p>
+    </div>
+    <div class="auth-field">
+      <label>Verification Code</label>
+      <input id="regCode" type="text" placeholder="000000" maxlength="6" style="text-align:center;font-size:24px;font-family:'Syne',sans-serif;font-weight:700;letter-spacing:8px">
+    </div>
+    <button class="auth-submit" onclick="doVerifyCode()">Verify & Create Account</button>
+    <div style="text-align:center;margin-top:16px">
+      <span style="color:var(--muted);font-size:13px">Didn't get it? </span>
+      <a href="#" onclick="resendCode(event)" style="color:var(--green);font-size:13px;text-decoration:none">Resend code</a>
+    </div>
   </div>
 </div>
 
@@ -545,6 +570,7 @@ function closeAuth(){
   document.getElementById('loginPage').classList.remove('active');
   document.getElementById('registerPage').classList.remove('active');
   document.body.style.overflow='';
+  resetRegisterForm();
 }
 function showRegister(e){
   e.preventDefault();
@@ -603,6 +629,19 @@ function isValidEmail(email){
   return /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email.trim());
 }
 
+// Turnstile callbacks
+let turnstileToken = null;
+function onTurnstileSuccess(token){
+  turnstileToken = token;
+  const btn = document.getElementById('regSubmitBtn');
+  if(btn){ btn.disabled = false; btn.style.opacity = '1'; btn.style.cursor = 'pointer'; }
+}
+function onTurnstileExpired(){
+  turnstileToken = null;
+  const btn = document.getElementById('regSubmitBtn');
+  if(btn){ btn.disabled = true; btn.style.opacity = '0.5'; btn.style.cursor = 'not-allowed'; }
+}
+
 async function doRegister(){
   const email    = document.getElementById('regEmail').value.trim();
   const username = document.getElementById('regUsername').value.trim();
@@ -612,24 +651,74 @@ async function doRegister(){
   if(username.length < 3){ toast('Username must be at least 3 characters.'); return; }
   if(username.length > 16){ toast('Username cannot be longer than 16 characters.'); return; }
   if(password.length < 8){ toast('Password must be at least 8 characters.'); return; }
+  if(!turnstileToken){ toast('Please complete the captcha.'); return; }
 
-  const btn = document.querySelector('#registerPage .auth-submit');
-  btn.textContent = 'Creating account...'; btn.disabled = true;
+  const btn = document.getElementById('regSubmitBtn');
+  btn.textContent = 'Sending code...'; btn.disabled = true;
   try {
-    const res = await fetch('/api/register', {
+    const res = await fetch('/api/register/send-code', {
       method: 'POST',
       headers: {'Content-Type':'application/json'},
-      body: JSON.stringify({ email, username, password })
+      body: JSON.stringify({ email, username, password, turnstileToken })
     });
     const data = await res.json();
     if(!data.ok){ toast(data.error); btn.textContent='Register'; btn.disabled=false; return; }
-    toast('Account created successfully', 'success');
-    setLoggedIn({ username: data.username, avatar: null });
-    setTimeout(()=>closeAuth(), 1200);
+    // Move to step 2
+    document.getElementById('regStep1').style.display = 'none';
+    document.getElementById('regStep2').style.display = 'block';
+    document.getElementById('regEmailDisplay').textContent = email;
+    document.getElementById('regCode').focus();
+    toast('Code sent! Check your email.', 'success');
   } catch(e){
     toast('Connection error. Please try again.');
     btn.textContent='Register'; btn.disabled=false;
   }
+}
+
+async function doVerifyCode(){
+  const code = document.getElementById('regCode').value.trim();
+  if(code.length !== 6){ toast('Please enter the 6-digit code.'); return; }
+
+  const btn = document.querySelector('#regStep2 .auth-submit');
+  btn.textContent = 'Verifying...'; btn.disabled = true;
+  try {
+    const res = await fetch('/api/register/verify', {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({ code })
+    });
+    const data = await res.json();
+    if(!data.ok){ toast(data.error); btn.textContent='Verify & Create Account'; btn.disabled=false; return; }
+    toast('Account created successfully!', 'success');
+    setLoggedIn({ username: data.username, avatar: null });
+    setTimeout(()=>{ closeAuth(); resetRegisterForm(); }, 1200);
+  } catch(e){
+    toast('Connection error. Please try again.');
+    btn.textContent='Verify & Create Account'; btn.disabled=false;
+  }
+}
+
+async function resendCode(e){
+  e.preventDefault();
+  try {
+    const res = await fetch('/api/register/resend-code', { method: 'POST' });
+    const data = await res.json();
+    if(data.ok) toast('New code sent!', 'success');
+    else toast(data.error || 'Could not resend. Please start over.');
+  } catch(e){ toast('Connection error.'); }
+}
+
+function resetRegisterForm(){
+  document.getElementById('regStep1').style.display = 'block';
+  document.getElementById('regStep2').style.display = 'none';
+  document.getElementById('regEmail').value = '';
+  document.getElementById('regUsername').value = '';
+  document.getElementById('regPassword').value = '';
+  document.getElementById('regCode').value = '';
+  turnstileToken = null;
+  if(window.turnstile) window.turnstile.reset();
+  const btn = document.getElementById('regSubmitBtn');
+  if(btn){ btn.disabled = true; btn.style.opacity = '0.5'; btn.style.cursor = 'not-allowed'; btn.textContent = 'Register'; }
 }
 
 async function doLogin(){
