@@ -124,6 +124,11 @@ footer{background:var(--bg2);border-top:0.5px solid var(--border);padding:48px;d
 .footer-copy{font-size:12px;color:#444}
 .footer-disclaimer{font-size:11px;color:#333;max-width:600px;line-height:1.5}
 
+.nav-user-pill{display:flex;align-items:center;gap:8px;background:rgba(255,255,255,0.05);border:0.5px solid rgba(255,255,255,0.1);border-radius:999px;padding:5px 12px 5px 5px;cursor:pointer;transition:background .2s;position:relative}
+.nav-user-pill:hover{background:rgba(255,255,255,0.09)}
+.nav-avatar-letter{width:28px;height:28px;border-radius:50%;background:var(--green);display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-size:13px;font-weight:700;color:#000;flex-shrink:0;overflow:hidden}
+.nav-avatar-letter img{width:100%;height:100%;object-fit:cover;border-radius:50%}
+
 /* auth styles are inline below */
 
 .reveal{opacity:0;transform:translateY(24px);transition:opacity .7s ease,transform .7s ease}
@@ -155,20 +160,39 @@ footer{background:var(--bg2);border-top:0.5px solid var(--border);padding:48px;d
   </a>
   <div class="nav-right">
     <div class="nav-social">
-      <!-- Discord -->
       <a href="https://discord.gg/y5FVZdgQdA" target="_blank" title="Discord">
         <svg viewBox="0 0 24 24"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028c.462-.63.874-1.295 1.226-1.994a.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z"/></svg>
       </a>
-      <!-- YouTube -->
       <a href="YOUTUBE_LINK_HERE" target="_blank" title="YouTube">
         <svg viewBox="0 0 24 24"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
       </a>
     </div>
-    <a href="#" class="nav-login" onclick="openLogin(event)">
-      <svg viewBox="0 0 24 24"><path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/></svg>
-      Log In
-    </a>
-    <a href="#" class="nav-cta" onclick="openLogin(event)">Get Started</a>
+    <!-- Logged OUT state -->
+    <div id="navGuest">
+      <a href="#" class="nav-login" onclick="openLogin(event)">
+        <svg viewBox="0 0 24 24"><path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/></svg>
+        Log In
+      </a>
+      <a href="#" class="nav-cta" onclick="openLogin(event)">Get Started</a>
+    </div>
+    <!-- Logged IN state -->
+    <div id="navUser" style="display:none;align-items:center;gap:12px">
+      <div class="nav-user-pill" onclick="toggleUserMenu()">
+        <div id="navAvatar" class="nav-avatar-letter">?</div>
+        <span id="navUsername" style="font-size:14px;font-weight:500;color:#fff"></span>
+        <svg viewBox="0 0 24 24" style="width:14px;height:14px;fill:#888;flex-shrink:0"><path d="M7 10l5 5 5-5z"/></svg>
+      </div>
+      <a href="/dashboard" class="nav-cta" style="display:flex;align-items:center;gap:7px">
+        <svg viewBox="0 0 24 24" style="width:15px;height:15px;fill:#000"><path d="M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z"/></svg>
+        Dashboard
+      </a>
+      <!-- dropdown -->
+      <div id="userMenu" style="display:none;position:absolute;top:64px;right:48px;background:#16161e;border:0.5px solid rgba(255,255,255,0.1);border-radius:12px;padding:8px;min-width:160px;z-index:200">
+        <a href="/dashboard" style="display:block;padding:10px 14px;color:#ccc;text-decoration:none;font-size:13px;border-radius:8px;transition:background .2s" onmouseover="this.style.background='#1e1e2a'" onmouseout="this.style.background='transparent'">Dashboard</a>
+        <div style="height:0.5px;background:rgba(255,255,255,0.07);margin:4px 0"></div>
+        <a href="#" onclick="doLogout()" style="display:block;padding:10px 14px;color:#e74c3c;text-decoration:none;font-size:13px;border-radius:8px;transition:background .2s" onmouseover="this.style.background='#1e1e2a'" onmouseout="this.style.background='transparent'">Log out</a>
+      </div>
+    </div>
   </div>
 </nav>
 
@@ -461,6 +485,55 @@ footer{background:var(--bg2);border-top:0.5px solid var(--border);padding:48px;d
 const nav = document.getElementById('nav');
 window.addEventListener('scroll',()=>nav.classList.toggle('scrolled',window.scrollY>40));
 
+// Close user menu when clicking outside
+document.addEventListener('click', e=>{
+  const menu = document.getElementById('userMenu');
+  if(menu && !e.target.closest('.nav-user-pill') && !e.target.closest('#userMenu')){
+    menu.style.display='none';
+  }
+});
+
+function toggleUserMenu(){
+  const m = document.getElementById('userMenu');
+  m.style.display = m.style.display==='none' ? 'block' : 'none';
+}
+
+function setLoggedIn(user){
+  // user = { username, avatar (url or null), discordId }
+  localStorage.setItem('rbxvault_session', JSON.stringify(user));
+  updateNavForUser(user);
+}
+
+function updateNavForUser(user){
+  document.getElementById('navGuest').style.display='none';
+  const navUser = document.getElementById('navUser');
+  navUser.style.display='flex';
+  document.getElementById('navUsername').textContent = user.username;
+  const avatarEl = document.getElementById('navAvatar');
+  if(user.avatar){
+    avatarEl.innerHTML = `<img src="${user.avatar}" alt="avatar">`;
+  } else {
+    avatarEl.textContent = user.username[0].toUpperCase();
+  }
+}
+
+function doLogout(){
+  localStorage.removeItem('rbxvault_session');
+  document.getElementById('navGuest').style.display='flex';
+  document.getElementById('navUser').style.display='none';
+  document.getElementById('userMenu').style.display='none';
+  toast('Logged out successfully', 'success');
+}
+
+// Check session on page load
+(function(){
+  const session = localStorage.getItem('rbxvault_session');
+  if(session){
+    try{ updateNavForUser(JSON.parse(session)); }
+    catch(e){ localStorage.removeItem('rbxvault_session'); }
+  }
+})();
+
 function openLogin(e){
   e.preventDefault();
   document.getElementById('loginPage').classList.add('active');
@@ -510,7 +583,9 @@ function discordOAuth(){
   const params = new URLSearchParams(window.location.search);
   if(params.get('discord_login') === 'success'){
     const username = params.get('username') || 'User';
+    const avatar = params.get('avatar') || null;
     toast('Welcome, ' + username + '!', 'success');
+    setLoggedIn({ username, avatar });
     history.replaceState({}, '', window.location.pathname);
   }
   if(params.get('error')){
@@ -522,74 +597,58 @@ function discordOAuth(){
 function isValidEmail(email){
   return /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email.trim());
 }
-function getUsers(){
-  try{ return JSON.parse(localStorage.getItem('rbxvault_users')||'[]'); }
-  catch(e){ return []; }
-}
-function saveUsers(users){
-  localStorage.setItem('rbxvault_users', JSON.stringify(users));
-}
 
-function doRegister(){
+async function doRegister(){
   const email    = document.getElementById('regEmail').value.trim();
   const username = document.getElementById('regUsername').value.trim();
   const password = document.getElementById('regPassword').value;
 
-  if(!isValidEmail(email)){
-    toast('Please use a valid email.');
-    return;
-  }
-  if(username.length < 3){
-    toast('Username must be at least 3 characters.');
-    return;
-  }
-  if(username.length > 16){
-    toast('Username cannot be longer than 16 characters.');
-    return;
-  }
-  if(password.length < 8){
-    toast('Password must be at least 8 characters.');
-    return;
-  }
+  if(!isValidEmail(email)){ toast('Please use a valid email.'); return; }
+  if(username.length < 3){ toast('Username must be at least 3 characters.'); return; }
+  if(username.length > 16){ toast('Username cannot be longer than 16 characters.'); return; }
+  if(password.length < 8){ toast('Password must be at least 8 characters.'); return; }
 
-  const users = getUsers();
-  if(users.find(u => u.email.toLowerCase() === email.toLowerCase())){
-    toast('This email has already been registered.');
-    return;
+  const btn = document.querySelector('#registerPage .auth-submit');
+  btn.textContent = 'Creating account...'; btn.disabled = true;
+  try {
+    const res = await fetch('/api/register', {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({ email, username, password })
+    });
+    const data = await res.json();
+    if(!data.ok){ toast(data.error); btn.textContent='Register'; btn.disabled=false; return; }
+    toast('Account created successfully', 'success');
+    setLoggedIn({ username: data.username, avatar: null });
+    setTimeout(()=>closeAuth(), 1200);
+  } catch(e){
+    toast('Connection error. Please try again.');
+    btn.textContent='Register'; btn.disabled=false;
   }
-  if(users.find(u => u.username.toLowerCase() === username.toLowerCase())){
-    toast('This username has already been registered.');
-    return;
-  }
-
-  users.push({ email: email.toLowerCase(), username, password });
-  saveUsers(users);
-  toast('Account created successfully', 'success');
-  setTimeout(()=>showLoginFromRegister(), 1200);
 }
 
-function doLogin(){
+async function doLogin(){
   const identifier = document.getElementById('loginIdentifier').value.trim();
   const password   = document.getElementById('loginPassword').value;
+  if(!identifier || !password){ toast('Please fill in all fields.'); return; }
 
-  if(!identifier || !password){
-    toast('Please fill in all fields.');
-    return;
+  const btn = document.querySelector('#loginPage .auth-submit');
+  btn.textContent = 'Logging in...'; btn.disabled = true;
+  try {
+    const res = await fetch('/api/login', {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({ identifier, password })
+    });
+    const data = await res.json();
+    if(!data.ok){ toast(data.error); btn.textContent='Login'; btn.disabled=false; return; }
+    toast('Welcome back, ' + data.username + '!', 'success');
+    setLoggedIn({ username: data.username, avatar: null });
+    setTimeout(()=>closeAuth(), 1200);
+  } catch(e){
+    toast('Connection error. Please try again.');
+    btn.textContent='Login'; btn.disabled=false;
   }
-
-  const users = getUsers();
-  const user = users.find(u =>
-    u.email === identifier.toLowerCase() ||
-    u.username.toLowerCase() === identifier.toLowerCase()
-  );
-
-  if(!user || user.password !== password){
-    toast('Email or password is incorrect.');
-    return;
-  }
-
-  toast('Welcome back, ' + user.username + '!', 'success');
-  setTimeout(()=>closeAuth(), 1200);
 }
 
 const reveals=document.querySelectorAll('.reveal');
