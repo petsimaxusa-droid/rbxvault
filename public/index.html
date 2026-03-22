@@ -1,1 +1,600 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RbxVault - Buy and Sell Robux Instantly</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --green:#1DDD7E;
+  --green-dim:rgba(29,221,126,0.12);
+  --green-glow:rgba(29,221,126,0.25);
+  --bg:#090909;
+  --bg2:#111113;
+  --bg3:#18181b;
+  --border:rgba(255,255,255,0.07);
+  --border-green:rgba(29,221,126,0.25);
+  --text:#f0f0f0;
+  --muted:#7a7a8a;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);overflow-x:hidden;min-height:100vh}
+body::before{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");pointer-events:none;z-index:0;opacity:.5}
 
+nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:18px 48px;display:flex;align-items:center;justify-content:space-between;border-bottom:0.5px solid transparent;transition:border-color .3s,background .3s}
+nav.scrolled{background:rgba(9,9,9,0.92);backdrop-filter:blur(16px);border-color:var(--border)}
+.nav-logo{display:flex;align-items:center;gap:10px;text-decoration:none}
+.nav-logo-icon{width:36px;height:36px;display:flex;align-items:center;justify-content:center}
+.nav-logo-text{font-family:'Syne',sans-serif;font-size:18px;font-weight:700;color:#fff}
+.nav-right{display:flex;align-items:center;gap:18px}
+.nav-social{display:flex;align-items:center;gap:12px}
+.nav-social a{color:rgba(255,255,255,0.55);display:flex;align-items:center;transition:color .2s}
+.nav-social a:hover{color:#fff}
+.nav-social svg{width:20px;height:20px;fill:currentColor}
+.nav-login{display:flex;align-items:center;gap:7px;color:#fff;text-decoration:none;font-size:14px;font-weight:500;opacity:.75;transition:opacity .2s}
+.nav-login:hover{opacity:1}
+.nav-login svg{width:18px;height:18px;fill:#fff}
+.nav-cta{background:var(--green);color:#000;font-family:'Syne',sans-serif;font-weight:700;font-size:13px;padding:9px 20px;border-radius:8px;text-decoration:none;transition:opacity .2s}
+.nav-cta:hover{opacity:.85}
+
+.hero{position:relative;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:120px 24px 80px;overflow:hidden}
+.hero-glow{position:absolute;top:10%;left:50%;transform:translateX(-50%);width:700px;height:500px;background:radial-gradient(ellipse at center,rgba(29,221,126,0.12) 0%,transparent 70%);pointer-events:none}
+.hero-grid{position:absolute;inset:0;background-image:linear-gradient(var(--border) 1px,transparent 1px),linear-gradient(90deg,var(--border) 1px,transparent 1px);background-size:60px 60px;mask-image:radial-gradient(ellipse 80% 60% at 50% 0%,black 0%,transparent 100%);pointer-events:none}
+.hero-badge{display:inline-flex;align-items:center;gap:8px;background:var(--green-dim);border:0.5px solid var(--border-green);border-radius:999px;padding:6px 16px;font-size:12px;color:var(--green);font-weight:500;margin-bottom:28px;animation:fadeUp .6s ease both}
+.hero-badge-dot{width:6px;height:6px;border-radius:50%;background:var(--green);animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+h1{font-family:'Syne',sans-serif;font-size:clamp(44px,7vw,108px);font-weight:800;line-height:1.05;letter-spacing:-3px;margin-bottom:24px;animation:fadeUp .7s .1s ease both}
+h1 .accent{color:var(--green)}
+.hero-sub{font-size:18px;color:var(--muted);max-width:520px;line-height:1.7;margin-bottom:40px;animation:fadeUp .7s .2s ease both}
+.hero-btns{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;animation:fadeUp .7s .3s ease both}
+.btn-primary{background:var(--green);color:#000;font-family:'Syne',sans-serif;font-weight:700;font-size:15px;padding:14px 32px;border-radius:10px;text-decoration:none;display:inline-flex;align-items:center;gap:9px;transition:transform .2s,box-shadow .2s;border:none;cursor:pointer}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 0 30px var(--green-glow)}
+.btn-primary .rbx-icon{width:18px;height:18px;flex-shrink:0}
+.btn-secondary{background:transparent;color:#fff;font-family:'Syne',sans-serif;font-weight:600;font-size:15px;padding:14px 32px;border-radius:10px;text-decoration:none;border:0.5px solid var(--border);display:inline-flex;align-items:center;gap:10px;transition:background .2s,border-color .2s}
+.btn-secondary:hover{background:var(--bg3);border-color:rgba(255,255,255,0.2)}
+.btn-secondary svg{width:18px;height:18px;fill:currentColor}
+.btn-discord{background:#5865F2;color:#fff;font-family:'Syne',sans-serif;font-weight:700;font-size:15px;padding:14px 32px;border-radius:10px;text-decoration:none;display:inline-flex;align-items:center;gap:10px;transition:opacity .2s;border:none;cursor:pointer}
+.btn-discord:hover{opacity:.88}
+.btn-discord svg{width:18px;height:18px;fill:#fff}
+@keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+
+.stats-bar{background:var(--green);padding:32px 48px;display:grid;grid-template-columns:repeat(4,1fr);text-align:center}
+.stat-num{font-family:'Syne',sans-serif;font-size:36px;font-weight:800;color:#000;line-height:1}
+.stat-label{font-size:13px;color:rgba(0,0,0,0.6);margin-top:4px;font-weight:500}
+
+section{position:relative;z-index:1}
+.section-inner{max-width:1100px;margin:0 auto;padding:100px 48px}
+.section-tag{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:600;color:var(--green);text-transform:uppercase;letter-spacing:2px;margin-bottom:16px}
+.section-tag::before{content:'';width:20px;height:1px;background:var(--green)}
+h2{font-family:'Syne',sans-serif;font-size:clamp(32px,4vw,52px);font-weight:800;letter-spacing:-1px;line-height:1.1;margin-bottom:16px}
+.section-sub{color:var(--muted);font-size:17px;max-width:540px;line-height:1.7}
+
+.features-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:2px;margin-top:64px;border:0.5px solid var(--border);border-radius:16px;overflow:hidden}
+.feature-card{background:var(--bg2);padding:36px 32px;border-right:0.5px solid var(--border);border-bottom:0.5px solid var(--border);transition:background .25s}
+.feature-card:hover{background:var(--bg3)}
+.feature-card:nth-child(3n){border-right:none}
+.feature-card:nth-child(4),.feature-card:nth-child(5),.feature-card:nth-child(6){border-bottom:none}
+.feature-icon{width:44px;height:44px;border-radius:12px;background:var(--green-dim);border:0.5px solid var(--border-green);display:flex;align-items:center;justify-content:center;margin-bottom:20px}
+.feature-icon svg{width:20px;height:20px;fill:var(--green)}
+.feature-title{font-family:'Syne',sans-serif;font-size:17px;font-weight:700;margin-bottom:10px}
+.feature-desc{color:var(--muted);font-size:14px;line-height:1.7}
+
+.how-bg{background:var(--bg2)}
+.steps{display:grid;grid-template-columns:repeat(4,1fr);gap:0;margin-top:64px;position:relative}
+.steps::before{content:'';position:absolute;top:28px;left:10%;right:10%;height:0.5px;background:linear-gradient(90deg,transparent,var(--border-green),transparent)}
+.step{text-align:center;padding:0 20px}
+.step-num{width:56px;height:56px;border-radius:50%;background:var(--bg);border:0.5px solid var(--border-green);display:flex;align-items:center;justify-content:center;margin:0 auto 20px;font-family:'Syne',sans-serif;font-size:18px;font-weight:800;color:var(--green)}
+.step-title{font-family:'Syne',sans-serif;font-size:16px;font-weight:700;margin-bottom:10px}
+.step-desc{color:var(--muted);font-size:14px;line-height:1.6}
+
+.reviews-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:64px}
+.review-card{background:var(--bg2);border:0.5px solid var(--border);border-radius:14px;padding:28px 24px;transition:border-color .25s}
+.review-card:hover{border-color:var(--border-green)}
+.review-stars{display:flex;gap:3px;margin-bottom:14px}
+.review-stars span{color:var(--green);font-size:14px}
+.review-text{color:#ccc;font-size:14px;line-height:1.7;margin-bottom:20px}
+.review-author{display:flex;align-items:center;gap:10px}
+.review-avatar{width:36px;height:36px;border-radius:50%;background:var(--green-dim);border:0.5px solid var(--border-green);display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-size:13px;font-weight:700;color:var(--green)}
+.review-name{font-size:14px;font-weight:500}
+.review-role{font-size:12px;color:var(--muted)}
+
+.payments{background:var(--bg2);border-top:0.5px solid var(--border);padding:40px 48px;display:flex;align-items:center;justify-content:center;gap:48px;flex-wrap:wrap}
+.payments-label{font-size:13px;color:var(--muted);font-weight:500}
+.payment-icons{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.pay-icon{width:40px;height:40px;background:#171717;border-radius:8px;display:flex;align-items:center;justify-content:center}
+
+.cta-section{background:var(--bg);padding:100px 48px;text-align:center;position:relative;overflow:hidden}
+.cta-glow{position:absolute;bottom:-100px;left:50%;transform:translateX(-50%);width:600px;height:400px;background:radial-gradient(ellipse,var(--green-glow),transparent 70%);pointer-events:none}
+.cta-section h2{font-family:'Syne',sans-serif;font-size:clamp(36px,5vw,64px);font-weight:800;letter-spacing:-1.5px;max-width:700px;margin:0 auto 20px}
+.cta-section p{color:var(--muted);font-size:17px;margin-bottom:40px}
+.cta-btns{display:flex;gap:14px;justify-content:center;flex-wrap:wrap}
+
+footer{background:var(--bg2);border-top:0.5px solid var(--border);padding:48px;display:flex;flex-direction:column;gap:24px}
+.footer-top{display:flex;align-items:flex-start;justify-content:space-between;gap:32px;flex-wrap:wrap}
+.footer-brand-name{font-family:'Syne',sans-serif;font-size:20px;font-weight:800;color:#fff;margin-bottom:8px}
+.footer-brand-desc{color:var(--muted);font-size:13px;max-width:280px;line-height:1.6}
+.footer-links{display:flex;gap:48px}
+.footer-col h4{font-family:'Syne',sans-serif;font-size:13px;font-weight:700;color:#fff;margin-bottom:14px;text-transform:uppercase;letter-spacing:1px}
+.footer-col a{display:block;color:var(--muted);text-decoration:none;font-size:13px;margin-bottom:8px;transition:color .2s}
+.footer-col a:hover{color:#fff}
+.footer-bottom{border-top:0.5px solid var(--border);padding-top:24px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px}
+.footer-copy{font-size:12px;color:#444}
+.footer-disclaimer{font-size:11px;color:#333;max-width:600px;line-height:1.5}
+
+/* auth styles are inline below */
+
+.reveal{opacity:0;transform:translateY(24px);transition:opacity .7s ease,transform .7s ease}
+.reveal.visible{opacity:1;transform:none}
+</style>
+</head>
+<body>
+
+<!-- Robux logo: correct shape from image — thick rounded hexagon ring, inner ring, center square -->
+<svg style="display:none" xmlns="http://www.w3.org/2000/svg">
+  <symbol id="rbx" viewBox="0 0 100 100">
+    <path fill-rule="evenodd" clip-rule="evenodd" fill="currentColor"
+      d="M50 6 Q53 6 55.5 7.5 L87 26.5 Q89.5 28 89.5 31 L89.5 69 Q89.5 72 87 73.5 L55.5 92.5 Q53 94 50 94 Q47 94 44.5 92.5 L13 73.5 Q10.5 72 10.5 69 L10.5 31 Q10.5 28 13 26.5 L44.5 7.5 Q47 6 50 6Z
+       M50 16 Q52 16 53.8 17 L79 31.5 Q80.8 32.5 80.8 34.5 L80.8 65.5 Q80.8 67.5 79 68.5 L53.8 83 Q52 84 50 84 Q48 84 46.2 83 L21 68.5 Q19.2 67.5 19.2 65.5 L19.2 34.5 Q19.2 32.5 21 31.5 L46.2 17 Q48 16 50 16Z"/>
+    <path fill-rule="evenodd" clip-rule="evenodd" fill="currentColor"
+      d="M50 23 Q51.5 23 53 23.8 L73 35.3 Q74.5 36.1 74.5 37.8 L74.5 62.2 Q74.5 63.9 73 64.7 L53 76.2 Q51.5 77 50 77 Q48.5 77 47 76.2 L27 64.7 Q25.5 63.9 25.5 62.2 L25.5 37.8 Q25.5 36.1 27 35.3 L47 23.8 Q48.5 23 50 23Z
+       M42 42 L58 42 L58 58 L42 58 Z"/>
+  </symbol>
+</svg>
+
+<div id="mainSite">
+
+<nav id="nav">
+  <a href="#" class="nav-logo">
+    <div class="nav-logo-icon">
+      <svg viewBox="0 0 100 100" width="36" height="36" style="color:var(--green)"><use href="#rbx"/></svg>
+    </div>
+    <span class="nav-logo-text">RbxVault</span>
+  </a>
+  <div class="nav-right">
+    <div class="nav-social">
+      <!-- Discord -->
+      <a href="https://discord.gg/y5FVZdgQdA" target="_blank" title="Discord">
+        <svg viewBox="0 0 24 24"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028c.462-.63.874-1.295 1.226-1.994a.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z"/></svg>
+      </a>
+      <!-- YouTube -->
+      <a href="YOUTUBE_LINK_HERE" target="_blank" title="YouTube">
+        <svg viewBox="0 0 24 24"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
+      </a>
+    </div>
+    <a href="#" class="nav-login" onclick="openLogin(event)">
+      <svg viewBox="0 0 24 24"><path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/></svg>
+      Log In
+    </a>
+    <a href="#" class="nav-cta" onclick="openLogin(event)">Get Started</a>
+  </div>
+</nav>
+
+<section class="hero">
+  <div class="hero-glow"></div>
+  <div class="hero-grid"></div>
+  <div class="hero-badge">
+    <div class="hero-badge-dot"></div>
+    Trusted by 5,000+ traders
+  </div>
+  <h1>The best place to<br>Buy and Sell your <span class="accent">ROBUX</span></h1>
+  <p class="hero-sub">Buy and sell Robux instantly. Secure transactions, best rates, and instant delivery all in one place.</p>
+  <div class="hero-btns">
+    <a href="#" class="btn-primary" onclick="openLogin(event)">
+      <svg class="rbx-icon" viewBox="0 0 100 100" style="color:#000000"><use href="#rbx"/></svg>
+      Get Started
+    </a>
+    <a href="https://discord.gg/y5FVZdgQdA" target="_blank" class="btn-discord">
+      <svg viewBox="0 0 24 24"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028c.462-.63.874-1.295 1.226-1.994a.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z"/></svg>
+      Join Discord
+    </a>
+  </div>
+</section>
+
+<div class="stats-bar reveal">
+  <div class="stat-item"><div class="stat-num">2M+</div><div class="stat-label">Robux Traded</div></div>
+  <div class="stat-item"><div class="stat-num">5K+</div><div class="stat-label">Happy Traders</div></div>
+  <div class="stat-item"><div class="stat-num">99.9%</div><div class="stat-label">Uptime</div></div>
+  <div class="stat-item"><div class="stat-num">24/7</div><div class="stat-label">Support</div></div>
+</div>
+
+<section id="features">
+  <div class="section-inner">
+    <div class="reveal">
+      <div class="section-tag">Why RbxVault</div>
+      <h2>Everything you need,<br>nothing you don't</h2>
+      <p class="section-sub">We built RbxVault to be the most reliable and transparent place to trade Robux. No surprises, no middlemen.</p>
+    </div>
+    <div class="features-grid reveal">
+      <div class="feature-card">
+        <div class="feature-icon"><svg viewBox="0 0 24 24"><path d="M13 2.05v2.02c3.95.49 7 3.85 7 7.93 0 3.21-1.81 6-4.72 7.28L13 17v5h5l-1.22-1.22C19.91 19.07 22 15.76 22 12c0-5.18-3.95-9.45-9-9.95zM11 2.05C5.95 2.55 2 6.82 2 12c0 3.76 2.09 7.07 5.22 8.78L6 22h5V2.05z"/></svg></div>
+        <div class="feature-title">Instant Delivery</div>
+        <div class="feature-desc">Robux lands in your account within minutes through our automated gamepass system. No waiting around.</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon"><svg viewBox="0 0 24 24"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm-2 16l-4-4 1.41-1.41L10 14.17l6.59-6.59L18 9l-8 8z"/></svg></div>
+        <div class="feature-title">Vault-Grade Security</div>
+        <div class="feature-desc">All transactions are encrypted. Your account and funds are protected by industry-leading security measures.</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon"><svg viewBox="0 0 24 24"><path d="M11.8 10.9c-2.27-.59-3-1.2-3-2.15 0-1.09 1.01-1.85 2.7-1.85 1.78 0 2.44.85 2.5 2.1h2.21c-.07-1.72-1.12-3.3-3.21-3.81V3h-3v2.16c-1.94.42-3.5 1.68-3.5 3.61 0 2.31 1.91 3.46 4.7 4.13 2.5.6 3 1.48 3 2.41 0 .69-.49 1.79-2.7 1.79-2.06 0-2.87-.92-2.98-2.1h-2.2c.12 2.19 1.76 3.42 3.68 3.83V21h3v-2.15c1.95-.37 3.5-1.5 3.5-3.55 0-2.84-2.43-3.81-4.7-4.4z"/></svg></div>
+        <div class="feature-title">Best Market Rates</div>
+        <div class="feature-desc">Live market pricing means you always get the most competitive Robux to USD rates available anywhere.</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon"><svg viewBox="0 0 24 24"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg></div>
+        <div class="feature-title">P2P Marketplace</div>
+        <div class="feature-desc">Buy directly from real sellers or list your own Robux. Transparent, community-powered trading.</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg></div>
+        <div class="feature-title">Verified Sellers</div>
+        <div class="feature-desc">Every seller goes through our verification process. Trade with confidence knowing scammers don't get in.</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17h-2v-2h2v2zm2.07-7.75l-.9.92C13.45 12.9 13 13.5 13 15h-2v-.5c0-1.1.45-2.1 1.17-2.83l1.24-1.26c.37-.36.59-.86.59-1.41 0-1.1-.9-2-2-2s-2 .9-2 2H8c0-2.21 1.79-4 4-4s4 1.79 4 4c0 .88-.36 1.68-.93 2.25z"/></svg></div>
+        <div class="feature-title">24/7 Support</div>
+        <div class="feature-desc">Our team is always on via Discord, live chat, or email. If something goes wrong we make it right.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+
+<section id="reviews">
+  <div class="section-inner">
+    <div class="reveal">
+      <div class="section-tag">Community</div>
+      <h2>Traders love the vault</h2>
+    </div>
+    <div class="reviews-grid reveal">
+      <div class="review-card">
+        <div class="review-stars"><span>★</span><span>★</span><span>★</span><span>★</span><span>★</span></div>
+        <div class="review-text">"Legit and instant. Got my 2k Robux in like 3 minutes. Support was super helpful when I had a question too. 10/10 would use again."</div>
+        <div class="review-author">
+          <div class="review-avatar">VL</div>
+          <div><div class="review-name">val_league</div><div class="review-role">Verified buyer</div></div>
+        </div>
+      </div>
+      <div class="review-card">
+        <div class="review-stars"><span>★</span><span>★</span><span>★</span><span>★</span><span>★</span></div>
+        <div class="review-text">"I was skeptical at first but the sell process was so smooth. Got paid out in LTC within minutes."</div>
+        <div class="review-author">
+          <div class="review-avatar">QX</div>
+          <div><div class="review-name">Qb***x</div><div class="review-role">Verified seller</div></div>
+        </div>
+      </div>
+      <div class="review-card">
+        <div class="review-stars"><span>★</span><span>★</span><span>★</span><span>★</span><span>★</span></div>
+        <div class="review-text">"Best rates I've found anywhere. Bought 4,500 R$ for $18. Roblox would've charged me $49.99 for the same amount. Saved over $31 just like that."</div>
+        <div class="review-author">
+          <div class="review-avatar">BZ</div>
+          <div><div class="review-name">Bl***z</div><div class="review-role">Verified buyer</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="cta-section">
+  <div class="cta-glow"></div>
+  <div class="reveal">
+    <div class="section-tag" style="justify-content:center">Get started</div>
+    <p>Join thousands of traders already on RbxVault. Fast, secure, and the best rates around.</p>
+    <div class="cta-btns">
+      <a href="#" class="btn-primary" onclick="openLogin(event)">
+        <svg class="rbx-icon" viewBox="0 0 100 100" style="color:#000"><use href="#rbx"/></svg>
+        Get Started
+      </a>
+      <a href="https://discord.gg/y5FVZdgQdA" target="_blank" class="btn-discord">
+        <svg viewBox="0 0 24 24"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028c.462-.63.874-1.295 1.226-1.994a.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z"/></svg>
+        Join Discord
+      </a>
+    </div>
+  </div>
+</section>
+
+<div class="payments">
+  <span class="payments-label">Accepted payments</span>
+  <div class="payment-icons">
+    <div class="pay-icon" title="Bitcoin">
+      <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 512 512" style="color:#F7931A;width:20px;height:20px" xmlns="http://www.w3.org/2000/svg"><path d="M504 256c0 136.967-111.033 248-248 248S8 392.967 8 256 119.033 8 256 8s248 111.033 248 248zm-141.651-35.33c4.937-32.999-20.191-50.739-54.55-62.573l11.146-44.702-27.213-6.781-10.851 43.524c-7.154-1.783-14.502-3.464-21.803-5.13l10.929-43.81-27.198-6.781-11.153 44.686c-5.922-1.349-11.735-2.682-17.377-4.084l.031-.14-37.53-9.37-7.239 29.062s20.191 4.627 19.765 4.913c11.022 2.751 13.014 10.044 12.68 15.825l-12.696 50.925c.76.194 1.744.473 2.829.907-.907-.225-1.876-.473-2.876-.713l-17.796 71.338c-1.349 3.348-4.767 8.37-12.471 6.464.271.395-19.78-4.937-19.78-4.937l-13.51 31.147 35.414 8.827c6.588 1.651 13.045 3.379 19.4 5.006l-11.262 45.213 27.182 6.781 11.153-44.733a1038.209 1038.209 0 0 0 21.687 5.627l-11.115 44.523 27.213 6.781 11.262-45.128c46.404 8.781 81.299 5.239 95.986-36.727 11.836-33.79-.589-53.281-25.004-65.991 17.78-4.098 31.174-15.792 34.747-39.949zm-62.177 87.179c-8.41 33.79-65.308 15.523-83.755 10.943l14.944-59.899c18.446 4.603 77.6 13.717 68.811 48.956zm8.417-87.667c-7.673 30.736-55.031 15.12-70.393 11.292l13.548-54.327c15.363 3.828 64.836 10.973 56.845 43.035z"></path></svg>
+    </div>
+    <div class="pay-icon" title="Ethereum">
+      <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 320 512" style="color:#627EEA;width:20px;height:20px" xmlns="http://www.w3.org/2000/svg"><path d="M311.9 260.8L160 353.6 8 260.8 160 0l151.9 260.8zM160 383.4L8 290.6 160 512l152-221.4-152 92.8z"></path></svg>
+    </div>
+    <div class="pay-icon" title="Litecoin">
+      <svg stroke="currentColor" fill="currentColor" stroke-width="0" role="img" viewBox="0 0 24 24" style="color:#BFBBBB;width:20px;height:20px" xmlns="http://www.w3.org/2000/svg"><path d="M12 0a12 12 0 1012 12A12 12 0 0012 0zm-.2617 3.6777h2.584a.3425.3425 0 01.33.4356l-2.0312 6.918 1.9062-.582-.4082 1.3847-1.9238.5605-1.248 4.213h6.6757a.3425.3425 0 01.3282.4374l-.582 2a.4586.4586 0 01-.4395.3301H6.7324l1.7227-5.8223-1.9063.5801.42-1.3613 1.9101-.58 2.4219-8.1798a.4557.4557 0 01.4375-.334Z"></path></svg>
+    </div>
+    <div class="pay-icon" title="USDT">
+      <svg stroke="currentColor" fill="currentColor" stroke-width="0" role="img" viewBox="0 0 24 24" style="color:#26A17B;width:20px;height:20px" xmlns="http://www.w3.org/2000/svg"><path d="M18.7538 10.5176c0 .6251-2.2379 1.1483-5.2381 1.2812l.0028.0007c-.0848.0064-.5233.0325-1.5012.0325-.7778 0-1.33-.0233-1.5237-.0325-3.0059-.1322-5.2495-.6555-5.2495-1.2819s2.2436-1.149 5.2495-1.2834v2.0442c.1965.0142.7594.0474 1.5372.0474.9334 0 1.4008-.0389 1.4849-.0466V9.2356c2.9994.1337 5.2381.657 5.2381 1.282zm5.19.5466L12.1248 22.389a.1803.1803 0 0 1-.2496 0L.0562 11.0635a.1781.1781 0 0 1-.0382-.2079l4.3762-9.1921a.1767.1767 0 0 1 .1626-.1026h14.8878a.1768.1768 0 0 1 .1612.1032l4.3762 9.1922a.1782.1782 0 0 1-.0382.2079zm-4.478-.4038c0-.8068-2.5515-1.4799-5.9473-1.6369V7.195h4.186V4.4055H6.3076V7.195h4.1852v1.8286c-3.4018.1562-5.9601.83-5.9601 1.6376 0 .8075 2.5583 1.4806 5.9601 1.6376v5.8618h3.025v-5.8639c3.394-.1563 5.948-.8295 5.948-1.6363z"></path></svg>
+    </div>
+    <div class="pay-icon" title="Credit/Debit Card">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" style="color:#A2A7AA;width:20px;height:20px"><path d="M4.5 3.75a3 3 0 0 0-3 3v.75h21v-.75a3 3 0 0 0-3-3h-15Z"></path><path fill-rule="evenodd" d="M22.5 9.75h-21v7.5a3 3 0 0 0 3 3h15a3 3 0 0 0 3-3v-7.5Zm-18 3.75a.75.75 0 0 1 .75-.75h6a.75.75 0 0 1 0 1.5h-6a.75.75 0 0 1-.75-.75Zm.75 2.25a.75.75 0 0 0 0 1.5h3a.75.75 0 0 0 0-1.5h-3Z" clip-rule="evenodd"></path></svg>
+    </div>
+    <div class="pay-icon" title="Apple Pay">
+      <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 640 512" style="color:#fff;width:22px;height:22px" xmlns="http://www.w3.org/2000/svg"><path d="M116.9 158.5c-7.5 8.9-19.5 15.9-31.5 14.9-1.5-12 4.4-24.8 11.3-32.6 7.5-9.1 20.6-15.6 31.3-16.1 1.2 12.4-3.7 24.7-11.1 33.8m10.9 17.2c-17.4-1-32.3 9.9-40.5 9.9-8.4 0-21-9.4-34.8-9.1-17.9.3-34.5 10.4-43.6 26.5-18.8 32.3-4.9 80 13.3 106.3 8.9 13 19.5 27.3 33.5 26.8 13.3-.5 18.5-8.6 34.5-8.6 16.1 0 20.8 8.6 34.8 8.4 14.5-.3 23.6-13 32.5-26 10.1-14.8 14.3-29.1 14.5-29.9-.3-.3-28-10.9-28.3-42.9-.3-26.8 21.9-39.5 22.9-40.3-12.5-18.6-32-20.6-38.8-21.1m100.4-36.2v194.9h30.3v-66.6h41.9c38.3 0 65.1-26.3 65.1-64.3s-26.4-64-64.1-64h-73.2zm30.3 25.5h34.9c26.3 0 41.3 14 41.3 38.6s-15 38.8-41.4 38.8h-34.8V165zm162.2 170.9c19 0 36.6-9.6 44.6-24.9h.6v23.4h28v-97c0-28.1-22.5-46.3-57.1-46.3-32.1 0-55.9 18.4-56.8 43.6h27.3c2.3-12 13.4-19.9 28.6-19.9 18.5 0 28.9 8.6 28.9 24.5v10.8l-37.8 2.3c-35.1 2.1-54.1 16.5-54.1 41.5.1 25.2 19.7 42 47.8 42zm8.2-23.1c-16.1 0-26.4-7.8-26.4-19.6 0-12.3 9.9-19.4 28.8-20.5l33.6-2.1v11c0 18.2-15.5 31.2-36 31.2zm102.5 74.6c29.5 0 43.4-11.3 55.5-45.4L640 193h-30.8l-35.6 115.1h-.6L537.4 193h-31.6L557 334.9l-2.8 8.6c-4.6 14.6-12.1 20.3-25.5 20.3-2.4 0-7-.3-8.9-.5v23.4c1.8.4 9.3.7 11.6.7z"></path></svg>
+    </div>
+    <div class="pay-icon" title="Google Pay">
+      <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 640 512" style="color:#fff;width:22px;height:22px" xmlns="http://www.w3.org/2000/svg"><path d="M105.72,215v41.25h57.1a49.66,49.66,0,0,1-21.14,32.6c-9.54,6.55-21.72,10.28-36,10.28-27.6,0-50.93-18.91-59.3-44.22a65.61,65.61,0,0,1,0-41l0,0c8.37-25.46,31.7-44.37,59.3-44.37a56.43,56.43,0,0,1,40.51,16.08L176.47,155a101.24,101.24,0,0,0-70.75-27.84,105.55,105.55,0,0,0-94.38,59.11,107.64,107.64,0,0,0,0,96.18v.15a105.41,105.41,0,0,0,94.38,59c28.47,0,52.55-9.53,70-25.91,20-18.61,31.41-46.15,31.41-78.91A133.76,133.76,0,0,0,205.38,215Zm389.41-4c-10.13-9.38-23.93-14.14-41.39-14.14-22.46,0-39.34,8.34-50.5,24.86l20.85,13.26q11.45-17,31.26-17a34.05,34.05,0,0,1,22.75,8.79A28.14,28.14,0,0,1,487.79,248v5.51c-9.1-5.07-20.55-7.75-34.64-7.75-16.44,0-29.65,3.88-39.49,11.77s-14.82,18.31-14.82,31.56a39.74,39.74,0,0,0,13.94,31.27c9.25,8.34,21,12.51,34.79,12.51,16.29,0,29.21-7.3,39-21.89h1v17.72h22.61V250C510.25,233.45,505.26,220.34,495.13,211ZM475.9,300.3a37.32,37.32,0,0,1-26.57,11.16A28.61,28.61,0,0,1,431,305.21a19.41,19.41,0,0,1-7.77-15.63c0-7,3.22-12.81,9.54-17.42s14.53-7,24.07-7C470,265,480.3,268,487.64,273.94,487.64,284.07,483.68,292.85,475.9,300.3Zm-93.65-142A55.71,55.71,0,0,0,341.74,142H279.07V328.74H302.7V253.1h39c16,0,29.5-5.36,40.51-15.93.88-.89,1.76-1.79,2.65-2.68A54.45,54.45,0,0,0,382.25,158.26Zm-16.58,62.23a30.65,30.65,0,0,1-23.34,9.68H302.7V165h39.63a32,32,0,0,1,22.6,9.23A33.18,33.18,0,0,1,365.67,220.49ZM614.31,201,577.77,292.7h-.45L539.9,201H514.21L566,320.55l-29.35,64.32H561L640,201Z"></path></svg>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <div class="footer-top">
+    <div class="footer-brand">
+      <div class="footer-brand-name">RbxVault</div>
+      <div class="footer-brand-desc">The most trusted community marketplace for buying and selling Robux. Fast, secure, and always open.</div>
+    </div>
+    <div class="footer-links">
+      <div class="footer-col">
+        <h4>Navigate</h4>
+        <a href="#" onclick="window.scrollTo({top:0,behavior:'smooth'});return false">Home</a>
+        <a href="#" onclick="openLogin(event)">Market</a>
+        <a href="https://discord.gg/y5FVZdgQdA" target="_blank">Support</a>
+        <a href="#" onclick="openLogin(event)">Login</a>
+      </div>
+      <div class="footer-col">
+        <h4>Legal</h4>
+        <a href="#">Privacy Policy</a>
+        <a href="#">Terms of Service</a>
+        <a href="#">Refund Policy</a>
+      </div>
+      <div class="footer-col">
+        <h4>Socials</h4>
+        <a href="https://discord.gg/y5FVZdgQdA" target="_blank">Discord</a>
+        <a href="YOUTUBE_LINK_HERE" target="_blank">YouTube</a>
+      </div>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <div class="footer-copy">2026 RbxVault. All rights reserved.</div>
+    <div class="footer-disclaimer">Not affiliated with Roblox Corporation. RbxVault is a community-driven player-to-player marketplace operating through P2P virtual currency trades.</div>
+  </div>
+</footer>
+
+</div>
+
+<!-- TOAST CONTAINER -->
+<div id="toastContainer" style="position:fixed;top:24px;right:24px;z-index:999;display:flex;flex-direction:column;gap:10px;pointer-events:none"></div>
+
+<!-- LOGIN PAGE -->
+<div class="auth-page" id="loginPage">
+  <button class="auth-back" onclick="closeAuth()">
+    <svg viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg>
+    Back
+  </button>
+  <a href="#" class="auth-logo" onclick="closeAuth()">
+    <svg viewBox="0 0 100 100" width="32" height="32" style="color:var(--green)"><use href="#rbx"/></svg>
+    <span class="auth-logo-text">RbxVault</span>
+  </a>
+  <div class="auth-box">
+    <h2>Login</h2>
+    <div class="auth-field">
+      <label>Email / Username</label>
+      <input id="loginIdentifier" type="text" placeholder="Enter your email or username">
+    </div>
+    <div class="auth-field">
+      <label>Password</label>
+      <input id="loginPassword" type="password" placeholder="Enter your password">
+    </div>
+    <button class="auth-submit" onclick="doLogin()">Login</button>
+    <div class="auth-divider">OR</div>
+    <button class="auth-discord" onclick="discordOAuth()">
+      <svg viewBox="0 0 24 24"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028c.462-.63.874-1.295 1.226-1.994a.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z"/></svg>
+      Continue with Discord
+    </button>
+    <div class="auth-footer">Don't have an account? <a href="#" onclick="showRegister(event)">Register</a></div>
+  </div>
+</div>
+
+<!-- REGISTER PAGE -->
+<div class="auth-page" id="registerPage">
+  <button class="auth-back" onclick="showLoginFromRegister()">
+    <svg viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg>
+    Back
+  </button>
+  <a href="#" class="auth-logo" onclick="closeAuth()">
+    <svg viewBox="0 0 100 100" width="32" height="32" style="color:var(--green)"><use href="#rbx"/></svg>
+    <span class="auth-logo-text">RbxVault</span>
+  </a>
+  <div class="auth-box">
+    <h2>Register</h2>
+    <div class="auth-field">
+      <label>Email</label>
+      <input id="regEmail" type="text" placeholder="Enter your email">
+    </div>
+    <div class="auth-field">
+      <label>Username</label>
+      <input id="regUsername" type="text" placeholder="Choose a username">
+    </div>
+    <div class="auth-field">
+      <label>Password</label>
+      <input id="regPassword" type="password" placeholder="Create a password (min 8 characters)">
+    </div>
+    <button class="auth-submit" onclick="doRegister()">Register</button>
+    <div class="auth-divider">OR</div>
+    <button class="auth-discord" onclick="discordOAuth()">
+      <svg viewBox="0 0 24 24"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028c.462-.63.874-1.295 1.226-1.994a.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z"/></svg>
+      Continue with Discord
+    </button>
+    <div class="auth-footer">Already have an account? <a href="#" onclick="showLoginFromRegister()">Login</a></div>
+  </div>
+</div>
+
+<style>
+/* AUTH PAGES */
+.auth-page{display:none;position:fixed;inset:0;background:var(--bg);z-index:200;align-items:center;justify-content:center;flex-direction:column}
+.auth-page.active{display:flex}
+.auth-logo{display:flex;align-items:center;gap:10px;margin-bottom:36px;text-decoration:none}
+.auth-logo-text{font-family:'Syne',sans-serif;font-size:18px;font-weight:700;color:#fff}
+.auth-box{background:#16161e;border:0.5px solid rgba(255,255,255,0.08);border-radius:16px;padding:36px 32px;width:100%;max-width:400px}
+.auth-box h2{font-family:'Syne',sans-serif;font-size:24px;font-weight:700;color:#fff;margin-bottom:28px}
+.auth-field{margin-bottom:18px}
+.auth-field label{display:block;font-size:13px;color:var(--muted);margin-bottom:6px}
+.auth-field input{width:100%;background:#0f0f14;border:0.5px solid rgba(255,255,255,0.1);border-radius:8px;padding:12px 14px;font-size:14px;color:#fff;outline:none;font-family:'DM Sans',sans-serif;transition:border-color .2s}
+.auth-field input:focus{border-color:var(--border-green)}
+.auth-submit{width:100%;background:var(--green);color:#000;font-family:'Syne',sans-serif;font-weight:700;font-size:15px;padding:13px;border-radius:8px;border:none;cursor:pointer;margin-top:4px;transition:opacity .2s}
+.auth-submit:hover{opacity:.88}
+.auth-divider{display:flex;align-items:center;gap:12px;margin:18px 0;color:var(--muted);font-size:12px}
+.auth-divider::before,.auth-divider::after{content:'';flex:1;height:0.5px;background:rgba(255,255,255,0.08)}
+.auth-discord{width:100%;background:#5865F2;color:#fff;font-family:'Syne',sans-serif;font-weight:700;font-size:14px;padding:13px;border-radius:8px;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:10px;transition:opacity .2s}
+.auth-discord:hover{opacity:.88}
+.auth-discord svg{width:20px;height:20px;fill:#fff}
+.auth-footer{text-align:center;margin-top:20px;font-size:13px;color:var(--muted)}
+.auth-footer a{color:var(--green);text-decoration:none}
+.auth-back{position:absolute;top:24px;left:32px;color:var(--muted);font-size:13px;cursor:pointer;display:flex;align-items:center;gap:6px;background:none;border:none;font-family:'DM Sans',sans-serif;transition:color .2s}
+.auth-back:hover{color:#fff}
+.auth-back svg{width:16px;height:16px;fill:currentColor}
+
+/* TOAST */
+.toast{background:#1a1a24;border:0.5px solid rgba(255,255,255,0.1);border-left:3px solid #e74c3c;border-radius:10px;padding:13px 18px;font-size:13px;color:#f0f0f0;font-family:'DM Sans',sans-serif;min-width:280px;max-width:360px;pointer-events:all;box-shadow:0 8px 32px rgba(0,0,0,0.4);transform:translateX(120%);transition:transform .35s cubic-bezier(.22,.68,0,1.2);opacity:1}
+.toast.show{transform:translateX(0)}
+.toast.success{border-left-color:var(--green)}
+</style>
+
+<script>
+const nav = document.getElementById('nav');
+window.addEventListener('scroll',()=>nav.classList.toggle('scrolled',window.scrollY>40));
+
+function openLogin(e){
+  e.preventDefault();
+  document.getElementById('loginPage').classList.add('active');
+  document.body.style.overflow='hidden';
+}
+function closeAuth(){
+  document.getElementById('loginPage').classList.remove('active');
+  document.getElementById('registerPage').classList.remove('active');
+  document.body.style.overflow='';
+}
+function showRegister(e){
+  e.preventDefault();
+  document.getElementById('loginPage').classList.remove('active');
+  document.getElementById('registerPage').classList.add('active');
+}
+function showLoginFromRegister(){
+  document.getElementById('registerPage').classList.remove('active');
+  document.getElementById('loginPage').classList.add('active');
+}
+
+function toast(msg, type='error'){
+  const c = document.getElementById('toastContainer');
+  const t = document.createElement('div');
+  t.className = 'toast' + (type==='success' ? ' success' : '');
+  t.textContent = msg;
+  c.appendChild(t);
+  requestAnimationFrame(()=>requestAnimationFrame(()=>t.classList.add('show')));
+  setTimeout(()=>{
+    t.classList.remove('show');
+    setTimeout(()=>t.remove(), 400);
+  }, 3800);
+}
+
+const BACKEND = 'https://rbxvault.cc';
+
+function discordOAuth(){
+  if(BACKEND){
+    window.location.href = BACKEND + '/auth/discord';
+  } else {
+    // Fallback until backend is deployed
+    window.open('https://discord.com/oauth2/authorize?client_id=1485007931803045908&redirect_uri=https%3A%2F%2Frestorecord.com%2Fapi%2Fcallback&response_type=code&scope=identify+guilds.join&state=1485003667013767178&prompt=none','_blank');
+  }
+}
+
+// Handle Discord OAuth redirect back to page
+(function(){
+  const params = new URLSearchParams(window.location.search);
+  if(params.get('discord_login') === 'success'){
+    const username = params.get('username') || 'User';
+    toast('Welcome, ' + username + '!', 'success');
+    history.replaceState({}, '', window.location.pathname);
+  }
+  if(params.get('error')){
+    toast('Discord login failed. Please try again.');
+    history.replaceState({}, '', window.location.pathname);
+  }
+})();
+
+function isValidEmail(email){
+  return /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email.trim());
+}
+function getUsers(){
+  try{ return JSON.parse(localStorage.getItem('rbxvault_users')||'[]'); }
+  catch(e){ return []; }
+}
+function saveUsers(users){
+  localStorage.setItem('rbxvault_users', JSON.stringify(users));
+}
+
+function doRegister(){
+  const email    = document.getElementById('regEmail').value.trim();
+  const username = document.getElementById('regUsername').value.trim();
+  const password = document.getElementById('regPassword').value;
+
+  if(!isValidEmail(email)){
+    toast('Please use a valid email.');
+    return;
+  }
+  if(username.length < 3){
+    toast('Username must be at least 3 characters.');
+    return;
+  }
+  if(username.length > 16){
+    toast('Username cannot be longer than 16 characters.');
+    return;
+  }
+  if(password.length < 8){
+    toast('Password must be at least 8 characters.');
+    return;
+  }
+
+  const users = getUsers();
+  if(users.find(u => u.email.toLowerCase() === email.toLowerCase())){
+    toast('This email has already been registered.');
+    return;
+  }
+  if(users.find(u => u.username.toLowerCase() === username.toLowerCase())){
+    toast('This username has already been registered.');
+    return;
+  }
+
+  users.push({ email: email.toLowerCase(), username, password });
+  saveUsers(users);
+  toast('Account created successfully', 'success');
+  setTimeout(()=>showLoginFromRegister(), 1200);
+}
+
+function doLogin(){
+  const identifier = document.getElementById('loginIdentifier').value.trim();
+  const password   = document.getElementById('loginPassword').value;
+
+  if(!identifier || !password){
+    toast('Please fill in all fields.');
+    return;
+  }
+
+  const users = getUsers();
+  const user = users.find(u =>
+    u.email === identifier.toLowerCase() ||
+    u.username.toLowerCase() === identifier.toLowerCase()
+  );
+
+  if(!user || user.password !== password){
+    toast('Email or password is incorrect.');
+    return;
+  }
+
+  toast('Welcome back, ' + user.username + '!', 'success');
+  setTimeout(()=>closeAuth(), 1200);
+}
+
+const reveals=document.querySelectorAll('.reveal');
+const obs=new IntersectionObserver(entries=>entries.forEach(e=>{if(e.isIntersecting)e.target.classList.add('visible')}),{threshold:0.1});
+reveals.forEach(r=>obs.observe(r));
+</script>
+</body>
+</html>
