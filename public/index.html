@@ -754,7 +754,8 @@ async function doVerifyCode(){
     setTimeout(()=>{ 
       closeAuth(); 
       resetRegisterForm();
-      window.location.href = selectedRole === 'sell' ? '/vendor' : '/dashboard';
+      localStorage.setItem('rbxvault_mode', selectedRole === 'sell' ? 'vendor' : 'customer');
+      window.location.href = '/dashboard';
     }, 1200);
   } catch(e){
     toast('Connection error. Please try again.');
