@@ -114,6 +114,13 @@ async function refreshBalance() {
       if(data.avatar) el.innerHTML = '<img src="'+data.avatar+'" style="width:100%;height:100%;object-fit:cover;border-radius:8px;" alt="">';
       else el.textContent = data.username[0].toUpperCase();
     });
+    // Sync role from DB to localStorage
+    if(data.role) {
+      localStorage.setItem('rbxvault_role', data.role);
+      if(!localStorage.getItem('rbxvault_mode')) {
+        localStorage.setItem('rbxvault_mode', data.role === 'sell' ? 'vendor' : 'customer');
+      }
+    }
     localStorage.setItem('rbxvault_session', JSON.stringify({username:data.username, avatar:data.avatar||null}));
   } catch(e) { console.error('balance refresh failed', e); }
 }
