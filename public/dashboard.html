@@ -6,8 +6,32 @@
 <title>RBXVault - Dashboard</title>
 <link rel="icon" type="image/png" href="/img/favicon.png">
 <link rel="stylesheet" href="/dashboard.css">
+<style>
+:root {
+  --background: #0D0D0D;
+  --foreground: #f0f0f0;
+  --card: #171717;
+  --card-foreground: #f0f0f0;
+  --border: rgba(255,255,255,0.1);
+  --input: rgba(255,255,255,0.15);
+  --ring: rgba(255,255,255,0.3);
+  --muted: #1C1C1C;
+  --muted-foreground: #A2A7AA;
+  --primary: #f0f0f0;
+  --primary-foreground: #0D0D0D;
+  --secondary: #1C1C1C;
+  --secondary-foreground: #f0f0f0;
+  --accent: #1C1C1C;
+  --accent-foreground: #f0f0f0;
+  --popover: #171717;
+  --popover-foreground: #f0f0f0;
+  --destructive: #e74c3c;
+  --radius: 0.625rem;
+}
+body { background-color: #0D0D0D !important; color: #f0f0f0 !important; }
+</style>
 </head>
-<body class="__variable_b598ed __variable_178916 antialiased">
+<body class="__variable_b598ed __variable_178916 antialiased dark" style="background-color:#0D0D0D;color:#f0f0f0;font-family:'satoshi',ui-sans-serif,system-ui,sans-serif;">
 
 <div id="page_vendor_overview" style="display:none">
 <div class="min-h-screen" style="background-color:#0D0D0D"><div class="hidden lg:block fixed left-0 top-0 h-full w-68" style="background-color:#0D0D0D"><div class="flex flex-col h-full" style="background-color: rgb(13, 13, 13);"><div class="p-6 flex items-center justify-center"><a href="/" style="display:flex;align-items:center;gap:10px;text-decoration:none;padding:8px 0">
@@ -407,13 +431,19 @@ function doLogout() {
   window.location.href = '/';
 }
 
-document.addEventListener('DOMContentLoaded', function() {
+function initDashboard() {
   refreshBalance();
   const saved = localStorage.getItem('rbxvault_current_page');
   const mode  = localStorage.getItem('rbxvault_mode') || 'customer';
-  if(saved && ALL_PAGES.includes(saved)) showPage(saved);
-  else showPage(mode === 'vendor' ? 'vendor_overview' : 'customer_overview');
-});
+  const page  = (saved && ALL_PAGES.includes(saved)) ? saved : (mode === 'vendor' ? 'vendor_overview' : 'customer_overview');
+  showPage(page);
+}
+
+if(document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', initDashboard);
+} else {
+  initDashboard();
+}
 
 // ===== SETTINGS PAGE =====
 function settingsPopulate(data) {
