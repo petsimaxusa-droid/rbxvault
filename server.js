@@ -128,7 +128,7 @@ app.get('/auth/discord', (req, res) => {
     redirect_uri: REDIRECT_URI,
     response_type: 'code',
     scope: 'identify email',
-    prompt: 'none'
+    prompt: 'consent'
   });
   res.redirect(`https://discord.com/oauth2/authorize?${params}`);
 });
@@ -160,21 +160,25 @@ app.get('/auth/discord/callback', async (req, res) => {
     // Find or create user
     let user = (await pool.query('SELECT id, username, discord_avatar FROM users WHERE discord_id=$1', [discordUser.id])).rows[0];
 
+    const freshAvatarUrl = discordUser.avatar
+      ? `https://cdn.discordapp.com/avatars/${discordUser.id}/${discordUser.avatar}.png?size=64`
+      : '';
+
     if (!user) {
       let username = discordUser.username.slice(0, 16).replace(/[^a-zA-Z0-9_]/g, '_');
       // Make unique if taken
       const taken = (await pool.query('SELECT id FROM users WHERE username ILIKE $1', [username])).rows[0];
       if (taken) username = username.slice(0, 13) + '_' + Math.floor(Math.random()*100);
 
-      const avatarUrl = discordUser.avatar
-        ? `https://cdn.discordapp.com/avatars/${discordUser.id}/${discordUser.avatar}.png?size=64`
-        : '';
-
       const result = await pool.query(
         'INSERT INTO users (email, username, discord_id, discord_avatar) VALUES ($1, $2, $3, $4) RETURNING id, username, discord_avatar',
-        [(discordUser.email || '').toLowerCase() || null, username, discordUser.id, avatarUrl]
+        [(discordUser.email || '').toLowerCase() || null, username, discordUser.id, freshAvatarUrl]
       );
       user = result.rows[0];
+    } else {
+      // Refresh avatar in case it changed
+      await pool.query('UPDATE users SET discord_avatar=$1 WHERE id=$2', [freshAvatarUrl, user.id]);
+      user.discord_avatar = freshAvatarUrl;
     }
 
     req.session.userId = user.id;
