@@ -69,12 +69,13 @@ app.use(session({
   }
 }));
 
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(__dirname, 'public'), { maxAge: 0, etag: false }));
 
 // =============================================
 // PAGE ROUTES
 // =============================================
 app.get('/dashboard', (req, res) => {
+  res.set('Cache-Control', 'no-store');
   res.sendFile(path.join(__dirname, 'public', 'dashboard.html'));
 });
 
