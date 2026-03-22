@@ -318,8 +318,10 @@ app.get('/auth/discord/callback', async (req, res) => {
       }
     }
 
+    let isNewUser = false;
     if (!user) {
       // 3) New user — create account from Discord profile
+      isNewUser = true;
       let username = (discordUser.global_name || discordUser.username)
         .slice(0, 16).replace(/[^a-zA-Z0-9_]/g, '_') || 'user';
 
@@ -345,7 +347,8 @@ app.get('/auth/discord/callback', async (req, res) => {
     res.redirect(
       FRONTEND_URL +
       '?discord_login=success&username=' + encodeURIComponent(user.username) +
-      '&avatar=' + encodeURIComponent(avatarUrl)
+      '&avatar=' + encodeURIComponent(avatarUrl) +
+      '&new_user=' + (isNewUser ? 'true' : 'false')
     );
   } catch (err) {
     console.error('Discord OAuth error:', err);
