@@ -2744,6 +2744,7 @@ function showPage(id) {
     if(el) el.style.display = (p === id) ? 'block' : 'none';
   });
   localStorage.setItem('rbxvault_current_page', id);
+  if(id === 'shared_affiliates' && typeof affLoadData === 'function') affLoadData();
 }
 
 function switchMode(mode) {
@@ -2918,12 +2919,6 @@ function affCopyLink() {
   navigator.clipboard.writeText(link).then(() => toast('Link copied!', 'success')).catch(() => toast('Could not copy link.', 'error'));
 }
 
-// Load aff data when page switches to affiliates
-const _origShowPage = showPage;
-function showPage(id) {
-  _origShowPage(id);
-  if(id === 'shared_affiliates') affLoadData();
-}
 
 </script>
 </body>
