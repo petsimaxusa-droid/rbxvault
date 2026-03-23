@@ -74,6 +74,17 @@ app.use(express.static(path.join(__dirname, 'public'), { maxAge: 0, etag: false 
 // =============================================
 // PAGE ROUTES
 // =============================================
+app.get('/dashboard.js', (req, res) => {
+  res.set('Content-Type', 'application/javascript');
+  res.set('Cache-Control', 'no-store');
+  res.sendFile(path.join(__dirname, 'public', 'dashboard.js'));
+});
+
+app.get('/dashboard2.html', (req, res) => {
+  res.set('Cache-Control', 'no-store');
+  res.sendFile(path.join(__dirname, 'public', 'dashboard2.html'));
+});
+
 app.get('/dashboard', (req, res) => {
   res.set('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
   res.set('Pragma', 'no-cache');
