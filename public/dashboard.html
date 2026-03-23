@@ -2614,68 +2614,104 @@
 </div>
 </div>
 </div>
+
 <div class="lg:ml-68"><main class="h-screen overflow-hidden"><div class="p-4 h-full">
 <div class="rounded-lg p-6 h-full" style="background-color:#121212;box-shadow:0 0 30px rgba(0,0,0,0.8)">
 <div class="h-full flex flex-col">
-<div class="shrink-0 pb-3 mb-3 border-b" style="border-color:rgba(255,255,255,0.07)">
+
+<!-- Header -->
+<div class="shrink-0 pb-4 mb-4 border-b" style="border-color:rgba(255,255,255,0.07)">
 <div class="flex items-center gap-3">
-<svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 640 512" class="w-5 h-5" style="color:rgb(34,183,106)" xmlns="http://www.w3.org/2000/svg"><path d="M544 248l0 3.3 69.7-69.7c21.9-21.9 21.9-57.3 0-79.2L535.6 24.4c-21.9-21.9-57.3-21.9-79.2 0L416.3 64.5c-2.7-.3-5.5-.5-8.3-.5L296 64c-37.1 0-67.6 28-71.6 64l-.4 0 0 120c0 22.1 17.9 40 40 40s40-17.9 40-40l0-72c0 0 0-.1 0-.1l0-15.9 16 0 136 0c0 0 0 0 .1 0l7.9 0c44.2 0 80 35.8 80 80l0 8zM336 192l0 56c0 39.8-32.2 72-72 72s-72-32.2-72-72l0-118.6c-35.9 6.2-65.8 32.3-76 68.2L99.5 255.2 26.3 328.4c-21.9 21.9-21.9 57.3 0 79.2l78.1 78.1c21.9 21.9 57.3 21.9 79.2 0l37.7-37.7c.9 0 1.8 .1 2.7 .1l160 0c26.5 0 48-21.5 48-48c0-5.6-1-11-2.7-16l2.7 0c26.5 0 48-21.5 48-48c0-12.8-5-24.4-13.2-33c25.7-5 45.1-27.6 45.2-54.8l0-.4c-.1-30.8-25.1-55.8-56-55.8l-120 0z"/></svg>
-<div class="flex flex-col">
-<span class="font-medium text-sm" style="color:rgba(255,255,255,0.95)">Affiliates</span>
-<p class="mt-0.5 text-xs" style="color:rgba(255,255,255,0.5)">Earn rewards by referring users to RBXVault</p>
-</div></div></div>
-<div class="flex-1 min-h-0 overflow-y-auto pr-1 mt-4">
-<div class="space-y-6">
-<div class="rounded-lg p-6 border-2" style="background-color:rgb(23,23,23);border-color:rgb(37,37,37)">
-<h2 class="text-base font-semibold mb-4 text-white">Your Affiliate Code</h2>
-<div class="space-y-4 lg:grid lg:grid-cols-2 lg:gap-6 lg:space-y-0">
-<div class="space-y-2">
-<label class="text-base font-medium" style="color:rgb(209,209,209)">Affiliate Code</label>
-<div class="space-y-2">
-<div id="aff_code_row" class="flex gap-2 items-center">
-<div id="aff_code_display" class="flex-1 px-4 rounded-lg text-lg font-semibold text-white h-12 flex items-center" style="background-color:rgb(18,18,18);border:2px solid rgb(37,37,37)">Loading...</div>
-<button onclick="affEditCode()" class="px-4 h-12 rounded-md text-sm font-medium" style="background-color:rgb(23,23,23);border:2px solid rgb(37,37,37);color:rgb(209,209,209)">Edit</button>
+<div class="w-8 h-8 rounded-lg flex items-center justify-center" style="background:linear-gradient(to right top,rgb(26,45,34),rgb(12,12,12))">
+<svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 640 512" class="w-4 h-4" style="color:rgb(34,183,106)" xmlns="http://www.w3.org/2000/svg"><path d="M544 248l0 3.3 69.7-69.7c21.9-21.9 21.9-57.3 0-79.2L535.6 24.4c-21.9-21.9-57.3-21.9-79.2 0L416.3 64.5c-2.7-.3-5.5-.5-8.3-.5L296 64c-37.1 0-67.6 28-71.6 64l-.4 0 0 120c0 22.1 17.9 40 40 40s40-17.9 40-40l0-72c0 0 0-.1 0-.1l0-15.9 16 0 136 0c0 0 0 0 .1 0l7.9 0c44.2 0 80 35.8 80 80l0 8zM336 192l0 56c0 39.8-32.2 72-72 72s-72-32.2-72-72l0-118.6c-35.9 6.2-65.8 32.3-76 68.2L99.5 255.2 26.3 328.4c-21.9 21.9-21.9 57.3 0 79.2l78.1 78.1c21.9 21.9 57.3 21.9 79.2 0l37.7-37.7c.9 0 1.8 .1 2.7 .1l160 0c26.5 0 48-21.5 48-48c0-5.6-1-11-2.7-16l2.7 0c26.5 0 48-21.5 48-48c0-12.8-5-24.4-13.2-33c25.7-5 45.1-27.6 45.2-54.8l0-.4c-.1-30.8-25.1-55.8-56-55.8l-120 0z"/></svg>
 </div>
-<div id="aff_code_edit" style="display:none" class="flex gap-2 items-center">
-<input id="aff_code_input" class="flex-1 px-4 rounded-lg text-lg font-semibold text-white h-12" style="background-color:rgb(18,18,18);border:2px solid rgb(34,183,106);outline:none" placeholder="Enter code...">
-<button onclick="affSaveCode()" class="px-4 h-12 rounded-md text-sm font-medium" style="background-color:rgb(34,183,106);color:#000">Save</button>
-<button onclick="affCancelEdit()" class="px-4 h-12 rounded-md text-sm font-medium" style="background-color:rgb(37,37,37);color:white">Cancel</button>
+<div>
+<div class="text-sm font-semibold text-white">Affiliates</div>
+<div class="text-xs" style="color:rgba(255,255,255,0.5)">Earn rewards by referring users to RBXVault</div>
 </div>
+</div>
+</div>
+
+<!-- Scrollable content -->
+<div class="flex-1 min-h-0 overflow-y-auto pr-1 space-y-5">
+
+<!-- Code + Link row -->
+<div class="rounded-xl p-5 border-2" style="background-color:rgb(23,23,23);border-color:rgb(37,37,37)">
+<h2 class="text-sm font-semibold text-white mb-4">Your Affiliate Code</h2>
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-5">
+
+<!-- Code -->
+<div class="space-y-2">
+<label class="text-sm font-medium" style="color:rgb(209,209,209)">Affiliate Code</label>
+<div id="aff_view_row" class="flex gap-2">
+<div id="aff_code_val" class="flex-1 h-11 px-4 flex items-center rounded-lg text-base font-semibold text-white" style="background:rgb(18,18,18);border:2px solid rgb(37,37,37)">—</div>
+<button onclick="affStartEdit()" class="px-4 h-11 rounded-lg text-sm font-medium transition-colors" style="background:rgb(23,23,23);border:2px solid rgb(55,55,55);color:rgb(200,200,200)">Edit</button>
+</div>
+<div id="aff_edit_row" class="flex gap-2" style="display:none!important">
+<input id="aff_input" maxlength="20" class="flex-1 h-11 px-4 rounded-lg text-base font-semibold text-white" style="background:rgb(18,18,18);border:2px solid rgb(34,183,106);outline:none" placeholder="Your code...">
+<button onclick="affSave()" class="px-4 h-11 rounded-lg text-sm font-bold" style="background:rgb(34,183,106);color:#000">Save</button>
+<button onclick="affCancel()" class="px-4 h-11 rounded-lg text-sm font-medium" style="background:rgb(37,37,37);color:white">Cancel</button>
 </div>
 <p class="text-xs" style="color:rgb(107,107,110)">3-20 characters, letters and numbers only</p>
 </div>
+
+<!-- Link -->
 <div class="space-y-2">
-<label class="text-base font-medium" style="color:rgb(209,209,209)">Your Affiliate Link</label>
+<label class="text-sm font-medium" style="color:rgb(209,209,209)">Your Affiliate Link</label>
 <div class="flex gap-2">
-<div id="aff_link_display" class="flex-1 px-4 rounded-lg text-sm text-white break-all h-12 flex items-center" style="background-color:rgb(18,18,18);border:2px solid rgb(37,37,37)">rbxvault.cc/affiliate?=...</div>
-<button onclick="affCopyLink()" class="flex items-center gap-2 px-4 h-12 rounded-md text-sm font-medium" style="background-color:rgb(37,37,37);color:white">
-<svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 448 512" class="w-4 h-4" xmlns="http://www.w3.org/2000/svg"><path d="M208 0L332.1 0c12.7 0 24.9 5.1 33.9 14.1l67.9 67.9c9 9 14.1 21.2 14.1 33.9L448 336c0 26.5-21.5 48-48 48l-192 0c-26.5 0-48-21.5-48-48l0-288c0-26.5 21.5-48 48-48zM48 128l80 0 0 64-64 0 0 256 192 0 0-32 64 0 0 48c0 26.5-21.5 48-48 48L48 512c-26.5 0-48-21.5-48-48L0 176c0-26.5 21.5-48 48-48z"/></svg>Copy</button>
+<div id="aff_link_val" class="flex-1 h-11 px-4 flex items-center rounded-lg text-sm text-white truncate" style="background:rgb(18,18,18);border:2px solid rgb(37,37,37)">—</div>
+<button onclick="affCopy()" class="flex items-center gap-2 px-4 h-11 rounded-lg text-sm font-medium transition-all" id="aff_copy_btn" style="background:rgb(37,37,37);color:white;white-space:nowrap">
+<svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 448 512" class="w-4 h-4" xmlns="http://www.w3.org/2000/svg"><path d="M208 0L332.1 0c12.7 0 24.9 5.1 33.9 14.1l67.9 67.9c9 9 14.1 21.2 14.1 33.9L448 336c0 26.5-21.5 48-48 48l-192 0c-26.5 0-48-21.5-48-48l0-288c0-26.5 21.5-48 48-48zM48 128l80 0 0 64-64 0 0 256 192 0 0-32 64 0 0 48c0 26.5-21.5 48-48 48L48 512c-26.5 0-48-21.5-48-48L0 176c0-26.5 21.5-48 48-48z"/></svg>
+Copy</button>
 </div>
 </div>
+
 </div>
 </div>
-<div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-<div class="rounded-lg p-6 border-2" style="background-color:rgb(23,23,23);border-color:rgb(37,37,37)">
-<div class="text-sm font-medium mb-2" style="color:rgb(162,167,170)">Total Affiliated Users</div>
-<div class="text-3xl font-bold" style="background-image:linear-gradient(135deg,rgb(34,183,106) 0%,rgb(41,244,141) 50%,rgb(34,183,106) 100%);background-clip:text;color:transparent">0</div>
+
+<!-- Stats row -->
+<div class="grid grid-cols-3 gap-4">
+<div class="rounded-xl p-5 border-2" style="background:rgb(23,23,23);border-color:rgb(37,37,37)">
+<div class="text-xs font-medium mb-2 uppercase tracking-wider" style="color:rgb(162,167,170)">Total Referred</div>
+<div id="aff_stat_users" class="text-3xl font-black" style="background:linear-gradient(135deg,#22B76A,#29F48D,#22B76A);background-clip:text;color:transparent">—</div>
 </div>
-<div class="rounded-lg p-6 border-2" style="background-color:rgb(23,23,23);border-color:rgb(37,37,37)">
-<div class="text-sm font-medium mb-2" style="color:rgb(162,167,170)">Total Earned</div>
-<div class="text-3xl font-bold" style="background-image:linear-gradient(135deg,rgb(34,183,106) 0%,rgb(41,244,141) 50%,rgb(34,183,106) 100%);background-clip:text;color:transparent">$0.00</div>
+<div class="rounded-xl p-5 border-2" style="background:rgb(23,23,23);border-color:rgb(37,37,37)">
+<div class="text-xs font-medium mb-2 uppercase tracking-wider" style="color:rgb(162,167,170)">Total Earned</div>
+<div id="aff_stat_earned" class="text-3xl font-black" style="background:linear-gradient(135deg,#22B76A,#29F48D,#22B76A);background-clip:text;color:transparent">—</div>
 </div>
-<div class="rounded-lg p-6 border-2" style="background-color:rgb(23,23,23);border-color:rgb(37,37,37)">
-<div class="text-sm font-medium mb-2" style="color:rgb(162,167,170)">Your Percentage</div>
-<div class="text-3xl font-bold" style="background-image:linear-gradient(135deg,rgb(34,183,106) 0%,rgb(41,244,141) 50%,rgb(34,183,106) 100%);background-clip:text;color:transparent">20%</div>
-</div>
-</div>
-<div class="rounded-lg p-4 border-2" style="background-color:rgba(34,183,106,0.05);border-color:rgba(34,183,106,0.2)">
-<p class="text-sm" style="color:rgb(162,167,170)">All users who registered through your Invite Code go to the list of your referrals. From each transaction, our service will share the profit from your referral as per the percent rate.</p>
+<div class="rounded-xl p-5 border-2" style="background:rgb(23,23,23);border-color:rgb(37,37,37)">
+<div class="text-xs font-medium mb-2 uppercase tracking-wider" style="color:rgb(162,167,170)">Your Cut</div>
+<div class="text-3xl font-black" style="background:linear-gradient(135deg,#22B76A,#29F48D,#22B76A);background-clip:text;color:transparent">20%</div>
 </div>
 </div>
+
+<!-- Chart -->
+<div class="rounded-xl p-5 border-2" style="background:rgb(23,23,23);border-color:rgb(37,37,37)">
+<div class="text-xs font-semibold uppercase tracking-wider mb-4" style="color:rgb(162,167,170)">Earnings Over Time</div>
+<div style="position:relative;height:200px;width:100%">
+<canvas id="aff_chart"></canvas>
 </div>
+<p class="text-xs mt-3" style="color:rgb(107,107,110)">Showing earnings over the last 30 days</p>
+</div>
+
+<!-- Referred users -->
+<div class="rounded-xl p-5 border-2" style="background:rgb(23,23,23);border-color:rgb(37,37,37)">
+<div class="text-xs font-semibold uppercase tracking-wider mb-4" style="color:rgb(162,167,170)">Referred Users</div>
+<div id="aff_users_list">
+<div class="text-sm text-center py-6" style="color:rgb(107,107,110)">No referred users yet.</div>
+</div>
+</div>
+
+<!-- How it works -->
+<div class="rounded-xl p-4 border-2" style="background:rgba(34,183,106,0.05);border-color:rgba(34,183,106,0.2)">
+<p class="text-sm" style="color:rgb(162,167,170)">Share your affiliate link with others. When someone registers a new account using your link and then makes a top-up or sells Robux and withdraws, you earn <strong style="color:rgb(34,183,106)">20%</strong> of every transaction they make — credited directly to your account balance.</p>
+</div>
+
+</div><!-- end scroll -->
 </div>
 </div>
 </main></div>
+</div>
 </div>
 
 <script>
@@ -2744,7 +2780,7 @@ function showPage(id) {
     if(el) el.style.display = (p === id) ? 'block' : 'none';
   });
   localStorage.setItem('rbxvault_current_page', id);
-  if(id === 'shared_affiliates' && typeof affLoadData === 'function') affLoadData();
+  if(id === 'shared_affiliates' && typeof affLoadDataWithChart === 'function') affLoadDataWithChart();
 }
 
 function switchMode(mode) {
@@ -2879,44 +2915,203 @@ async function settingsRemoveAvatar(e) {
 
 // ===== AFFILIATES PAGE =====
 let _affCode = null;
+let _affChart = null;
 
-function affLoadData() {
-  const session = JSON.parse(localStorage.getItem('rbxvault_session') || '{}');
-  const username = session.username || 'USER';
-  // Generate a default code from username
-  _affCode = username.toUpperCase().replace(/[^A-Z0-9]/g,'').slice(0,8) + Math.floor(Math.random()*100);
-  _affCode = _affCode.slice(0,10);
-  document.getElementById('aff_code_display').textContent = _affCode;
-  document.getElementById('aff_link_display').textContent = 'rbxvault.cc/affiliate?=' + _affCode;
+async function affLoadData() {
+  // Show loading state
+  document.getElementById('aff_code_val').textContent = 'Loading...';
+  document.getElementById('aff_link_val').textContent = 'Loading...';
+  document.getElementById('aff_stat_users').textContent = '—';
+  document.getElementById('aff_stat_earned').textContent = '—';
+
+  try {
+    const res = await fetch(BACKEND + '/api/affiliate', { credentials: 'include' });
+    const data = await res.json();
+    if(!data.ok){ toast(data.error || 'Failed to load affiliate data.', 'error'); return; }
+
+    // Code + link
+    _affCode = data.code;
+    document.getElementById('aff_code_val').textContent = _affCode;
+    document.getElementById('aff_link_val').textContent = 'rbxvault.cc/?ref=' + _affCode;
+
+    // Stats
+    document.getElementById('aff_stat_users').textContent = data.totalUsers;
+    document.getElementById('aff_stat_earned').textContent = '$' + parseFloat(data.totalEarned || 0).toFixed(2);
+
+    // Chart
+    affRenderChart(data.chartData || []);
+
+    // Referred users list
+    affRenderUsers(data.referredUsers || []);
+
+  } catch(e) {
+    console.error(e);
+    toast('Could not load affiliate data.', 'error');
+  }
 }
 
-function affEditCode() {
-  document.getElementById('aff_code_display').closest('.flex.gap-2').style.display = 'none';
-  const edit = document.getElementById('aff_code_edit');
-  edit.style.display = 'flex';
-  document.getElementById('aff_code_input').value = _affCode || '';
-  document.getElementById('aff_code_input').focus();
+function affRenderChart(chartData) {
+  const canvas = document.getElementById('aff_chart');
+  if(!canvas) return;
+
+  // Build 30-day date array
+  const days = [];
+  const vals = [];
+  for(let i = 29; i >= 0; i--) {
+    const d = new Date();
+    d.setDate(d.getDate() - i);
+    const key = d.toISOString().slice(0,10);
+    days.push(d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }));
+    const found = chartData.find(r => r.day && r.day.slice(0,10) === key);
+    vals.push(found ? parseFloat(found.total) : 0);
+  }
+
+  if(_affChart) { _affChart.destroy(); _affChart = null; }
+
+  const ctx = canvas.getContext('2d');
+  _affChart = new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: days,
+      datasets: [{
+        label: 'Earnings',
+        data: vals,
+        borderColor: '#22B76A',
+        backgroundColor: 'rgba(34,183,106,0.15)',
+        borderWidth: 2,
+        pointRadius: 3,
+        pointBackgroundColor: '#22B76A',
+        fill: true,
+        tension: 0.3
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          backgroundColor: 'rgb(28,28,28)',
+          borderColor: 'rgb(37,37,37)',
+          borderWidth: 1,
+          titleColor: 'rgb(162,167,170)',
+          bodyColor: '#22B76A',
+          callbacks: {
+            label: ctx => ' $' + ctx.raw.toFixed(2)
+          }
+        }
+      },
+      scales: {
+        x: {
+          ticks: { color: '#6B6B6E', font: { size: 10 }, maxTicksLimit: 8 },
+          grid: { color: 'rgba(37,37,37,0.8)' },
+          border: { color: '#252525' }
+        },
+        y: {
+          ticks: { color: '#6B6B6E', font: { size: 10 }, callback: v => '$' + v.toFixed(2) },
+          grid: { color: 'rgba(37,37,37,0.8)' },
+          border: { color: '#252525' },
+          beginAtZero: true
+        }
+      }
+    }
+  });
 }
 
-function affCancelEdit() {
-  document.getElementById('aff_code_edit').style.display = 'none';
-  document.getElementById('aff_code_display').closest('.flex.gap-2').style.display = 'flex';
+function affRenderUsers(users) {
+  const el = document.getElementById('aff_users_list');
+  if(!el) return;
+  if(!users || users.length === 0) {
+    el.innerHTML = '<div class="text-sm text-center py-6" style="color:rgb(107,107,110)">No referred users yet.</div>';
+    return;
+  }
+  el.innerHTML = users.map(u => {
+    const initials = (u.username || '?')[0].toUpperCase();
+    const avatarHtml = u.avatar
+      ? `<img src="${u.avatar}" style="width:100%;height:100%;object-fit:cover;border-radius:8px" onerror="this.parentElement.textContent='${initials}'">`
+      : initials;
+    const joined = u.joinedAt ? new Date(u.joinedAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : '';
+    return `<div class="flex items-center gap-3 py-2.5 border-b last:border-b-0" style="border-color:rgba(255,255,255,0.05)">
+      <div style="width:36px;height:36px;border-radius:8px;background:rgb(42,42,42);color:#1DDD7E;font-weight:800;font-size:14px;display:flex;align-items:center;justify-content:center;overflow:hidden;flex-shrink:0">${avatarHtml}</div>
+      <div class="flex flex-col min-w-0">
+        <span class="text-sm font-medium text-white">${u.username}</span>
+        <span class="text-xs" style="color:rgb(107,107,110)">Joined ${joined}</span>
+      </div>
+    </div>`;
+  }).join('');
 }
 
-function affSaveCode() {
-  const val = document.getElementById('aff_code_input').value.trim().toUpperCase();
-  if(val.length < 3 || val.length > 20) { toast('Code must be 3-20 characters.', 'error'); return; }
+function affStartEdit() {
+  document.getElementById('aff_view_row').style.display = 'none';
+  const editRow = document.getElementById('aff_edit_row');
+  editRow.style.cssText = 'display:flex';
+  const inp = document.getElementById('aff_input');
+  inp.value = _affCode || '';
+  inp.focus();
+}
+
+function affCancel() {
+  document.getElementById('aff_edit_row').style.cssText = 'display:none!important';
+  document.getElementById('aff_view_row').style.display = 'flex';
+}
+
+async function affSave() {
+  const val = document.getElementById('aff_input').value.trim().toUpperCase();
+  if(val.length < 3) { toast('Code must be at least 3 characters.', 'error'); return; }
+  if(val.length > 20) { toast('Code cannot be longer than 20 characters.', 'error'); return; }
   if(!/^[A-Z0-9]+$/.test(val)) { toast('Letters and numbers only.', 'error'); return; }
-  _affCode = val;
-  document.getElementById('aff_code_display').textContent = _affCode;
-  document.getElementById('aff_link_display').textContent = 'rbxvault.cc/affiliate?=' + _affCode;
-  affCancelEdit();
-  toast('Affiliate code updated!', 'success');
+
+  const btn = document.querySelector('#aff_edit_row button');
+  btn.textContent = 'Saving...'; btn.disabled = true;
+
+  try {
+    const res = await fetch(BACKEND + '/api/affiliate/code', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      credentials: 'include',
+      body: JSON.stringify({ code: val })
+    });
+    const data = await res.json();
+    btn.textContent = 'Save'; btn.disabled = false;
+    if(!data.ok) { toast(data.error, 'error'); return; }
+    _affCode = data.code;
+    document.getElementById('aff_code_val').textContent = _affCode;
+    document.getElementById('aff_link_val').textContent = 'rbxvault.cc/?ref=' + _affCode;
+    affCancel();
+    toast('Affiliate code updated!', 'success');
+  } catch(e) {
+    btn.textContent = 'Save'; btn.disabled = false;
+    toast('Connection error. Please try again.', 'error');
+  }
 }
 
-function affCopyLink() {
-  const link = 'https://rbxvault.cc/affiliate?=' + (_affCode || '');
-  navigator.clipboard.writeText(link).then(() => toast('Link copied!', 'success')).catch(() => toast('Could not copy link.', 'error'));
+function affCopy() {
+  if(!_affCode) { toast('No affiliate code to copy.', 'error'); return; }
+  const link = 'https://rbxvault.cc/?ref=' + _affCode;
+  navigator.clipboard.writeText(link)
+    .then(() => {
+      const btn = document.getElementById('aff_copy_btn');
+      btn.textContent = 'Copied!';
+      btn.style.background = 'rgb(34,183,106)';
+      btn.style.color = '#000';
+      setTimeout(() => {
+        btn.innerHTML = '<svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 448 512" class="w-4 h-4" xmlns="http://www.w3.org/2000/svg"><path d="M208 0L332.1 0c12.7 0 24.9 5.1 33.9 14.1l67.9 67.9c9 9 14.1 21.2 14.1 33.9L448 336c0 26.5-21.5 48-48 48l-192 0c-26.5 0-48-21.5-48-48l0-288c0-26.5 21.5-48 48-48zM48 128l80 0 0 64-64 0 0 256 192 0 0-32 64 0 0 48c0 26.5-21.5 48-48 48L48 512c-26.5 0-48-21.5-48-48L0 176c0-26.5 21.5-48 48-48z"/></svg>Copy';
+        btn.style.background = 'rgb(37,37,37)';
+        btn.style.color = 'white';
+      }, 2000);
+      toast('Link copied to clipboard!', 'success');
+    })
+    .catch(() => toast('Could not copy link.', 'error'));
+}
+
+// Load Chart.js if not already loaded, then load affiliate data
+function affLoadDataWithChart() {
+  if(typeof Chart !== 'undefined') { affLoadData(); return; }
+  const s = document.createElement('script');
+  s.src = 'https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js';
+  s.onload = () => affLoadData();
+  s.onerror = () => { toast('Chart library failed to load.', 'error'); affLoadData(); };
+  document.head.appendChild(s);
 }
 
 
