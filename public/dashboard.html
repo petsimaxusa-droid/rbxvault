@@ -2774,7 +2774,6 @@
 
 
 function toggleSidebar() {
-  // Find the visible page's sidebar
   const visiblePage = ALL_PAGES.find(p => {
     const el = document.getElementById('page_' + p);
     return el && el.style.display !== 'none';
@@ -2784,13 +2783,26 @@ function toggleSidebar() {
   if(!page) return;
   const sidebar = page.querySelector('.fixed.left-0');
   if(!sidebar) return;
-  if(sidebar.style.display === 'flex' || sidebar.style.display === '') {
-    sidebar.style.display = sidebar.classList.contains('hidden') ? 'flex' : 'none';
+  const isOpen = sidebar.getAttribute('data-open') === '1';
+  if(isOpen) {
+    sidebar.setAttribute('data-open','0');
+    sidebar.style.transform = 'translateX(-100%)';
+    overlay.style.display = 'none';
   } else {
+    sidebar.setAttribute('data-open','1');
+    sidebar.style.transform = 'translateX(0)';
     sidebar.style.display = 'flex';
+    sidebar.style.flexDirection = 'column';
+    sidebar.style.zIndex = '200';
+    overlay.style.display = 'block';
   }
-  sidebar.style.flexDirection = 'column';
 }
+
+// Create overlay element
+const overlay = document.createElement('div');
+overlay.style.cssText = 'display:none;position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:199';
+overlay.onclick = toggleSidebar;
+document.body.appendChild(overlay);
 
 // Toast notification
 function toast(msg, type='error') {
